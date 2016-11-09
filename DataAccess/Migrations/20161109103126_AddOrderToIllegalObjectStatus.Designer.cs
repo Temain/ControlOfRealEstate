@@ -8,9 +8,10 @@ using ControlOfRealEstate.DataAccess;
 namespace ControlOfRealEstate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161109103126_AddOrderToIllegalObjectStatus")]
+    partial class AddOrderToIllegalObjectStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1");
@@ -71,10 +72,6 @@ namespace ControlOfRealEstate.DataAccess.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<DateTime?>("DeletedAt");
-
                     b.Property<string>("Description");
 
                     b.Property<string>("Infringement");
@@ -90,8 +87,6 @@ namespace ControlOfRealEstate.DataAccess.Migrations
                     b.Property<string>("ResultsOfReview");
 
                     b.Property<int>("StatusId");
-
-                    b.Property<DateTime?>("UpdatedAt");
 
                     b.HasKey("IllegalObjectId");
 

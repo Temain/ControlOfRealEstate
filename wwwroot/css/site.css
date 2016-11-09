@@ -94,9 +94,9 @@
     position: relative !important;
 }
 
-.content {
+/*.content {
     padding-top: 15px;
-}
+}*/
 
 .pusher {
     padding-top: 53px;
@@ -122,8 +122,15 @@
 .map-marks {
     position: absolute !important;
     left: 16px;
-    top: 16px;
+    top: 2px;
     opacity: 0.8;
-    width: 200px;
+    padding: 5px 10px 0px 10px !important;
+    /*width: 200px;*/
     z-index: 1;
+}
+
+/*              Форум
+----------------------------------*/
+.ui.comments {
+    max-width: none !important;
 }

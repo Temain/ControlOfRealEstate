@@ -1,10 +1,15 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using ControlOfRealEstate.Models.IllegalObjectViewModels;
+@{
+    ViewData["Title"] = "Система контроля недвижимости";
+
+    var illegalObjectStatuses = ViewBag.IllegalObjectStatuses as List<IllegalObjectStatusViewModel>;
 }
 
-<div class="ui segment map-marks">
-    <p>Custom elements</p>
-    @*<button id="saveDistricts" class="ui positive button">Save districts</button>*@
+<div class="ui horizontal segments map-marks">
+    @foreach (IllegalObjectStatusViewModel status in illegalObjectStatuses)
+    {
+        <a href="#"><img border="0" alt="@status.IllegalObjectStatusName" title="@status.IllegalObjectStatusName" src="@Url.Content("~/images/" + status.IllegalObjectPlacemark)"></a>
+    }
 </div>
 
 <div class="map-container">
@@ -24,14 +29,6 @@
                 controls: [] // ['zoomControl', 'searchControl', 'typeSelector', 'fullscreenControl']
             });
 
-            // Добавляем метку на карту
-            myPlacemark = new ymaps.Placemark([45.03909376242208, 38.97636406359854],
-                {
-                    hintContent: 'Краснодар!',
-                    balloonContent: 'Тратата!'
-                });
-            myMap.geoObjects.add(myPlacemark);
-
             // Карта во весь экран
             toggle();
 
@@ -39,7 +36,7 @@
             showDistricts();
 
             // Показать все застройки
-            // getIllegal();
+            getIllegal();
         }
 
         function toggle() {
@@ -65,60 +62,36 @@
             );
         }
 
-        var illegalData = '';
         function getIllegal() {
-            //var ill_1 = new YMaps.Style();
-            //ill_1.iconStyle = new YMaps.IconStyle();
-            //ill_1.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-4.png";
-            //ill_1.iconStyle.size = new YMaps.Point(25, 31);
-            //ill_1.iconStyle.offset = new YMaps.Point(-13.5, -26);
 
-            //var ill_2 = new YMaps.Style();
-            //ill_2.iconStyle = new YMaps.IconStyle();
-            //ill_2.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-1.png";
-            //ill_2.iconStyle.size = new YMaps.Point(25, 31);
-            //ill_2.iconStyle.offset = new YMaps.Point(-13.5, -26);
+            $.ajax({
+                type: "GET",
+                url: "/api/illegal",
+                dataType: "text",
+                data: "",
+                error: function (data) { console.log(data); },
+                success: function (data) {
+                    var illegalObjects = JSON.parse(data);
+                    $.each(illegalObjects, function (index, obj) {
+                        var coordinates = [obj.latitude, obj.longitude];
+                        var placemark = new ymaps.Placemark(coordinates, {
+                            hintContent: obj.address,
+                            balloonContent: "<br/>Адрес: " + obj.address + "<br/>Статус: " + obj.statusName + "<br/><br/><a href='/forum/thread/1' target='_blank'>Подробнее</a>"
+                        }, {
+                            // Опции.
+                            // Необходимо указать данный тип макета.
+                            iconLayout: 'default#image',
+                            // Своё изображение иконки метки.
+                            iconImageHref: 'images/' + obj.statusPlacemark,
+                            // Размеры метки.
+                            iconImageSize: [32, 37]
+                        });
 
-            //var ill_3 = new YMaps.Style();
-            //ill_3.iconStyle = new YMaps.IconStyle();
-            //ill_3.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-2.png";
-            //ill_3.iconStyle.size = new YMaps.Point(25, 31);
-            //ill_3.iconStyle.offset = new YMaps.Point(-13.5, -26);
+                        myMap.geoObjects.add(placemark);
+                    });
+                }
+            });
 
-            //var ill_4 = new YMaps.Style();
-            //ill_4.iconStyle = new YMaps.IconStyle();
-            //ill_4.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-3.png"; /// 
-            //ill_4.iconStyle.size = new YMaps.Point(25, 31);
-            //ill_4.iconStyle.offset = new YMaps.Point(-13.5, -26);
-
-            //var ill_5 = new YMaps.Style();
-            //ill_5.iconStyle = new YMaps.IconStyle();
-            //ill_5.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-5.png";
-            //ill_5.iconStyle.size = new YMaps.Point(25, 31);
-            //ill_5.iconStyle.offset = new YMaps.Point(-13.5, -26);
-
-            //var ill_6 = new YMaps.Style();
-            //ill_6.iconStyle = new YMaps.IconStyle();
-            //ill_6.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-6.png";
-            //ill_6.iconStyle.size = new YMaps.Point(25, 31);
-            //ill_6.iconStyle.offset = new YMaps.Point(-13.5, -26);
-
-            if (illegalData != '') {
-                eval(illegalData);
-            } else {
-                $.ajax({
-                    type: "GET",
-                    url: "http://neagent.info/realty/karta/ajax-get-illegal/",
-                    dataType: "text",
-                    data: "",
-                    complete: function (data) { },
-                    error: function (data) { },
-                    success: function (data, textStatus) {
-                        illegalData = data;
-                        // eval(illegalData);
-                    }
-                });
-            }
         }
     </script>
 } 

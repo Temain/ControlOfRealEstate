@@ -23,9 +23,19 @@ namespace ControlOfRealEstate.Models
         public string Address { get; set; }
 
         /// <summary>
-        /// Статус
+        /// Идентификатор статуса
         /// </summary>
-        public string Status { get; set; }
+        public int? StatusId { get; set; }
+
+        /// <summary>
+        /// Наименование статуса
+        /// </summary>
+        public string StatusName { get; set; }
+
+        /// <summary>
+        /// Наименование файла для метки на карте
+        /// </summary>
+        public string StatusPlacemark { get; set; }
 
         /// <summary>
         /// Описание
@@ -56,5 +66,10 @@ namespace ControlOfRealEstate.Models
         /// Идентификатор из сервиса neagent.info
         /// </summary>
         public int? NeagentId { get; set; } 
+
+        /// <summary>
+        /// Дата добавления
+        /// </summary>
+        public DateTime? CreatedAt { get; set; }
     }
 }

@@ -29,6 +29,27 @@ namespace ControlOfRealEstate.Controllers
             _context = context;
         }
 
+        [HttpGet("")]
+        public List<IllegalObjectViewModel> Get()
+        {
+            var illegalObjects = _context.IllegalObjects
+                .AsNoTracking()
+                .Select(x => new IllegalObjectViewModel
+                {
+                    IllegalObjectId = x.IllegalObjectId,
+                    Name = x.Name,
+                    Address = x.Address,
+                    StatusId = x.StatusId,
+                    StatusName = x.Status.IllegalObjectStatusName,
+                    StatusPlacemark = x.Status.IllegalObjectPlacemark,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude
+                })
+                .ToList();
+
+            return illegalObjects;
+        }
+
         [HttpGet("parse")]
         public IActionResult Parse()
         {
@@ -83,7 +104,7 @@ namespace ControlOfRealEstate.Controllers
                     if (match.Success)
                     {
                         currentObject.Address = match.Groups["address"].Value;
-                        currentObject.Status = match.Groups["status"].Value;
+                        currentObject.StatusName = match.Groups["status"].Value;
                     }
                 }
                 catch (FormatException) { continue; }
@@ -128,6 +149,13 @@ namespace ControlOfRealEstate.Controllers
                         {
                             illegalObject.ResultsOfReview = match.Groups["review"].Value;
                         }
+
+                        pattern = new Regex("<td class=\"tdnm\">Дата добавления:</td>\n<td>(?<created>.*)</td>");
+                        match = pattern.Match(data);
+                        if (match.Success)
+                        {
+                            illegalObject.CreatedAt = DateTime.Parse(match.Groups["created"].Value);
+                        }
                     }
                 }
                 catch (FormatException) { continue; }
@@ -143,13 +171,15 @@ namespace ControlOfRealEstate.Controllers
 
             foreach (var illegalObject in illegalObjects)
             {
-                var newIllegalObjectStatus = statuses.FirstOrDefault(s => s.IllegalObjectStatusName == illegalObject.Status);
+                var newIllegalObjectStatus = statuses.FirstOrDefault(s => s.IllegalObjectStatusName == illegalObject.StatusName);
                 if (newIllegalObjectStatus == null) continue;
 
                 var illegalObjectInDb = _context.IllegalObjects.FirstOrDefault(x => x.NeagentId == illegalObject.NeagentId);
                 if (illegalObjectInDb != null)
                 {
-                    // Пока что не вижу смысла в обновлении
+                    illegalObjectInDb.CreatedAt = illegalObject.CreatedAt ?? DateTime.Now;
+
+                    _context.IllegalObjects.Update(illegalObjectInDb);
                 }
                 else
                 {
