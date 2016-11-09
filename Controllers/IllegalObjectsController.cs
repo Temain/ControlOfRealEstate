@@ -146,20 +146,29 @@ namespace ControlOfRealEstate.Controllers
                 var newIllegalObjectStatus = statuses.FirstOrDefault(s => s.IllegalObjectStatusName == illegalObject.Status);
                 if (newIllegalObjectStatus == null) continue;
 
-                var newIllegalObject = new IllegalObject
+                var illegalObjectInDb = _context.IllegalObjects.FirstOrDefault(x => x.NeagentId == illegalObject.NeagentId);
+                if (illegalObjectInDb != null)
                 {
-                    Name = illegalObject.Name,
-                    Description = illegalObject.Description,
-                    Address = illegalObject.Address,
-                    Infringement = illegalObject.Infringement,
-                    Latitude = illegalObject.Latitude,
-                    Longitude = illegalObject.Longitude,
-                    NeagentId = illegalObject.NeagentId,
-                    ResultsOfReview = illegalObject.ResultsOfReview,
-                    StatusId = newIllegalObjectStatus.IllegalObjectStatusId
-                };
+                    // Пока что не вижу смысла в обновлении
+                }
+                else
+                {
+                    var newIllegalObject = new IllegalObject
+                    {
+                        Name = illegalObject.Name,
+                        Description = illegalObject.Description,
+                        Address = illegalObject.Address,
+                        Infringement = illegalObject.Infringement,
+                        Latitude = illegalObject.Latitude,
+                        Longitude = illegalObject.Longitude,
+                        NeagentId = illegalObject.NeagentId,
+                        ResultsOfReview = illegalObject.ResultsOfReview,
+                        StatusId = newIllegalObjectStatus.IllegalObjectStatusId
+                    };
 
-                _context.IllegalObjects.Add(newIllegalObject);
+                    _context.IllegalObjects.Add(newIllegalObject);
+                }
+
                 _context.SaveChanges();
             }
         }
