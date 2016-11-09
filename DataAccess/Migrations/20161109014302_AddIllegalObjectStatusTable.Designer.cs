@@ -8,9 +8,10 @@ using ControlOfRealEstate.DataAccess;
 namespace ControlOfRealEstate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161109014302_AddIllegalObjectStatusTable")]
+    partial class AddIllegalObjectStatusTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1");
@@ -62,36 +63,6 @@ namespace ControlOfRealEstate.DataAccess.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("ControlOfRealEstate.Models.IllegalObject", b =>
-                {
-                    b.Property<int?>("IllegalObjectId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Address");
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("Infringement");
-
-                    b.Property<double>("Latitude");
-
-                    b.Property<double>("Longitude");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("NeagentId");
-
-                    b.Property<string>("ResultsOfReview");
-
-                    b.Property<int>("StatusId");
-
-                    b.HasKey("IllegalObjectId");
-
-                    b.HasIndex("StatusId");
-
-                    b.ToTable("IllegalObjects");
                 });
 
             modelBuilder.Entity("ControlOfRealEstate.Models.IllegalObjectStatus", b =>
@@ -211,14 +182,6 @@ namespace ControlOfRealEstate.DataAccess.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("ControlOfRealEstate.Models.IllegalObject", b =>
-                {
-                    b.HasOne("ControlOfRealEstate.Models.IllegalObjectStatus", "Status")
-                        .WithMany("IllegalObjects")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

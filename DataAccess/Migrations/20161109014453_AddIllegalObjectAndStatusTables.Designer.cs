@@ -8,9 +8,10 @@ using ControlOfRealEstate.DataAccess;
 namespace ControlOfRealEstate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161109014453_AddIllegalObjectAndStatusTables")]
+    partial class AddIllegalObjectAndStatusTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1");

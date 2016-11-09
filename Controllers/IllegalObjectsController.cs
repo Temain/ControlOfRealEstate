@@ -4,10 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ControlOfRealEstate.DataAccess;
 using ControlOfRealEstate.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Linq;
@@ -19,10 +21,12 @@ namespace ControlOfRealEstate.Controllers
     public class IllegalObjectsController : Controller
     {
         private readonly IHostingEnvironment _appEnvironment;
+        private readonly ApplicationDbContext _context;
 
-        public IllegalObjectsController(IHostingEnvironment appEnvironment)
+        public IllegalObjectsController(IHostingEnvironment appEnvironment, ApplicationDbContext context)
         {
             _appEnvironment = appEnvironment;
+            _context = context;
         }
 
         [HttpGet("parse")]
@@ -32,6 +36,7 @@ namespace ControlOfRealEstate.Controllers
 
             GetGeoposition(illegalObjects);
             GetDescription(illegalObjects);
+            SaveToDatabase(illegalObjects);
 
             return Ok();
         }
@@ -126,6 +131,36 @@ namespace ControlOfRealEstate.Controllers
                     }
                 }
                 catch (FormatException) { continue; }
+            }
+        }
+
+        /// <summary>
+        /// Сохранение полученных объектов в базу данных
+        /// </summary>
+        private void SaveToDatabase(List<IllegalObjectViewModel> illegalObjects)
+        {
+            var statuses = _context.IllegalObjectStatuses.AsNoTracking().ToList();
+
+            foreach (var illegalObject in illegalObjects)
+            {
+                var newIllegalObjectStatus = statuses.FirstOrDefault(s => s.IllegalObjectStatusName == illegalObject.Status);
+                if (newIllegalObjectStatus == null) continue;
+
+                var newIllegalObject = new IllegalObject
+                {
+                    Name = illegalObject.Name,
+                    Description = illegalObject.Description,
+                    Address = illegalObject.Address,
+                    Infringement = illegalObject.Infringement,
+                    Latitude = illegalObject.Latitude,
+                    Longitude = illegalObject.Longitude,
+                    NeagentId = illegalObject.NeagentId,
+                    ResultsOfReview = illegalObject.ResultsOfReview,
+                    StatusId = newIllegalObjectStatus.IllegalObjectStatusId
+                };
+
+                _context.IllegalObjects.Add(newIllegalObject);
+                _context.SaveChanges();
             }
         }
     }

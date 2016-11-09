@@ -6,6 +6,9 @@ namespace ControlOfRealEstate.DataAccess
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<IllegalObject> IllegalObjects { get; set; }
+        public DbSet<IllegalObjectStatus> IllegalObjectStatuses { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
