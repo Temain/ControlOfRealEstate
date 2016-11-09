@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="ui segment map-marks">
+    <p>Custom elements</p>
+    @*<button id="saveDistricts" class="ui positive button">Save districts</button>*@
+</div>
+
+<div class="map-container">
+    <div id="map" style="height: 100vh;"></div>
+</div>
+
+@section Scripts {
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script type="text/javascript">
+        ymaps.ready(init);
+        var myMap, myPlacemark, fullScreen = false;
+
+        function init() {
+            myMap = new ymaps.Map("map", {
+                center: [45.03909376242208, 38.97636406359854],
+                zoom: 12,
+                controls: [] // ['zoomControl', 'searchControl', 'typeSelector', 'fullscreenControl']
+            });
+
+            // Добавляем метку на карту
+            myPlacemark = new ymaps.Placemark([45.03909376242208, 38.97636406359854],
+                {
+                    hintContent: 'Краснодар!',
+                    balloonContent: 'Тратата!'
+                });
+            myMap.geoObjects.add(myPlacemark);
+
+            // Карта во весь экран
+            toggle();
+
+            // Показать районы
+            showDistricts();
+
+            // Показать все застройки
+            // getIllegal();
+        }
+
+        function toggle() {
+            fullScreen = !fullScreen;
+
+            // Добавляем/убираем CSS-класс, определяющий размеры контейнера карты,
+            // заданные в абсолютных единицах (300x200 px).
+            if (fullScreen) {
+                $('#map').removeClass('smallMap');
+            } else {
+                $('#map').addClass('smallMap');
+            }
+
+            myMap.container.fitToViewport();
+        }
+
+        function showDistricts() {
+            ymaps.geoXml.load('http://neagent.info/xml/ymaps/realty/?1.89').then(
+                 function (res) {
+                     myMap.geoObjects.add(res.geoObjects);
+                 },
+                 function (err) { alert('Ошибка обработки запроса'); }
+            );
+        }
+
+        var illegalData = '';
+        function getIllegal() {
+            //var ill_1 = new YMaps.Style();
+            //ill_1.iconStyle = new YMaps.IconStyle();
+            //ill_1.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-4.png";
+            //ill_1.iconStyle.size = new YMaps.Point(25, 31);
+            //ill_1.iconStyle.offset = new YMaps.Point(-13.5, -26);
+
+            //var ill_2 = new YMaps.Style();
+            //ill_2.iconStyle = new YMaps.IconStyle();
+            //ill_2.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-1.png";
+            //ill_2.iconStyle.size = new YMaps.Point(25, 31);
+            //ill_2.iconStyle.offset = new YMaps.Point(-13.5, -26);
+
+            //var ill_3 = new YMaps.Style();
+            //ill_3.iconStyle = new YMaps.IconStyle();
+            //ill_3.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-2.png";
+            //ill_3.iconStyle.size = new YMaps.Point(25, 31);
+            //ill_3.iconStyle.offset = new YMaps.Point(-13.5, -26);
+
+            //var ill_4 = new YMaps.Style();
+            //ill_4.iconStyle = new YMaps.IconStyle();
+            //ill_4.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-3.png"; /// 
+            //ill_4.iconStyle.size = new YMaps.Point(25, 31);
+            //ill_4.iconStyle.offset = new YMaps.Point(-13.5, -26);
+
+            //var ill_5 = new YMaps.Style();
+            //ill_5.iconStyle = new YMaps.IconStyle();
+            //ill_5.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-5.png";
+            //ill_5.iconStyle.size = new YMaps.Point(25, 31);
+            //ill_5.iconStyle.offset = new YMaps.Point(-13.5, -26);
+
+            //var ill_6 = new YMaps.Style();
+            //ill_6.iconStyle = new YMaps.IconStyle();
+            //ill_6.iconStyle.href = "http://gis.krd.ru/umk/images/baloons/balloon-6.png";
+            //ill_6.iconStyle.size = new YMaps.Point(25, 31);
+            //ill_6.iconStyle.offset = new YMaps.Point(-13.5, -26);
+
+            if (illegalData != '') {
+                eval(illegalData);
+            } else {
+                $.ajax({
+                    type: "GET",
+                    url: "http://neagent.info/realty/karta/ajax-get-illegal/",
+                    dataType: "text",
+                    data: "",
+                    complete: function (data) { },
+                    error: function (data) { },
+                    success: function (data, textStatus) {
+                        illegalData = data;
+                        // eval(illegalData);
+                    }
+                });
+            }
+        }
+    </script>
+} 
