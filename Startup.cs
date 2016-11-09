@@ -82,6 +82,11 @@ namespace ControlOfRealEstate
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "forum",
+                    template: "forum/{id?}",
+                    defaults: new { controller = "Forum", action = "Index" });
             });
         }
     }
