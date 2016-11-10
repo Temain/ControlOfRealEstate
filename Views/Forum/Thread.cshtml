@@ -1,4 +1,7 @@
-﻿@{ 
+﻿@using ControlOfRealEstate.HtmlHelpers;
+@using ControlOfRealEstate.Models.ForumViewModels;
+@model ForumThreadViewModel
+@{
     ViewBag.Title = "Обсуждение | Система контроля недвижимости";
 }
 
@@ -6,106 +9,54 @@
     <div class="ui container">
 
         <div class="thread-title">
-            <h1>Тут должна быть тема обсуждения</h1>
+            <h1>@Model.Theme</h1>
         </div>
 
-        <div class="ui comments">
-            <h3 class="ui dividing header">Комментарии</h3>
-            <div class="comment">
-                <a class="avatar">
-                    <img src="http://semantic-ui.com/images/avatar/small/matt.jpg">
-                </a>
-                <div class="content">
-                    <a class="author">Matt</a>
-                    <div class="metadata">
-                        <span class="date">Today at 5:42PM</span>
-                    </div>
-                    <div class="text">
-                        How artistic!
-                    </div>
-                    <div class="actions">
-                        <a class="reply">Reply</a>
-                    </div>
-                </div>
+        <h3 class="ui dividing header">Комментарии</h3>
+
+        @CommentHelpers.HierarchycalComments(Model.Comments)
+
+        <form class="ui reply form">
+            <div class="field">
+                <textarea></textarea>
             </div>
-            <div class="comment">
-                <a class="avatar">
-                    <img src="http://semantic-ui.com/images/avatar/small/elliot.jpg">
-                </a>
-                <div class="content">
-                    <a class="author">Elliot Fu</a>
-                    <div class="metadata">
-                        <span class="date">Yesterday at 12:30AM</span>
-                    </div>
-                    <div class="text">
-                        <p>This has been very useful for my research. Thanks as well!</p>
-                    </div>
-                    <div class="actions">
-                        <a class="reply">Reply</a>
-                    </div>
-                </div>
-                <div class="comments">
-                    <div class="comment">
-                        <a class="avatar">
-                            <img src="http://semantic-ui.com/images/avatar/small/jenny.jpg">
-                        </a>
-                        <div class="content">
-                            <a class="author">Jenny Hess</a>
-                            <div class="metadata">
-                                <span class="date">Just now</span>
-                            </div>
-                            <div class="text">
-                                Elliot you are always so right :)
-                            </div>
-                            <div class="actions">
-                                <a class="reply">Reply</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="ui primary submit labeled icon button">
+                <i class="icon edit"></i> Отправить
             </div>
-            <div class="comment">
-                <a class="avatar">
-                    <img src="http://semantic-ui.com/images/avatar/small/joe.jpg">
-                </a>
-                <div class="content">
-                    <a class="author">Joe Henderson</a>
-                    <div class="metadata">
-                        <span class="date">5 days ago</span>
-                    </div>
-                    <div class="text">
-                        Dude, this is awesome. Thanks so much
-                    </div>
-                    <div class="actions">
-                        <a class="reply">Reply</a>
-                    </div>
-                </div>
-            </div>
-            <div class="comment">
-                <a class="avatar">
-                    <img src="http://semantic-ui.com/images/avatar/small/steve.jpg">
-                </a>
-                <div class="content">
-                    <a class="author">Steve Jobes</a>
-                    <div class="metadata">
-                        <div class="date">2 days ago</div>
-                    </div>
-                    <div class="text">
-                        Revolutionary!
-                    </div>
-                    <div class="actions">
-                        <a class="reply active">Reply</a>
-                    </div>
-                    <form class="ui reply form">
-                        <div class="field">
-                            <textarea></textarea>
-                        </div>
-                        <div class="ui primary submit labeled icon button">
-                            <i class="icon edit"></i> Add Reply
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/lib/jquery-timeago/jquery.timeago.js"></script>
+    <script src="~/lib/jquery-timeago/locales/jquery.timeago.ru.js"></script>
+    <script>
+        $(function () {
+            $("time.timeago").timeago();
+
+            $("a.reply").click(function () {
+                var replyLink = $(this);
+                var replyForm = $(".reply.form");
+
+                var replyLinkComment = replyLink.closest(".comment");
+                var replyFormComment = replyForm.closest(".comment");
+                if (replyLinkComment.is(replyFormComment)) {
+                    var isVisible = replyForm.is(":visible");
+                    if (isVisible) {
+                        replyForm.hide();
+                    } else {
+                        replyForm.show();
+                    }
+                } else {
+                    replyForm.show();
+                }
+
+                var replyFormTextArea = replyForm.find("textarea");
+                replyFormTextArea.val('');
+
+                var currentComment = $(this).closest(".comment > .content");
+                currentComment.append(replyForm);
+            });
+        });
+    </script>
+}

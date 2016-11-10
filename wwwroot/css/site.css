@@ -149,6 +149,10 @@
     margin-bottom: 36px;
 }
 
+/*.thread-list .item {
+    padding: 15px 0 !important;
+}*/
+
 .ui.comments {
     max-width: none !important;
 }
