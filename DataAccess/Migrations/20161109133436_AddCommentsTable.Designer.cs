@@ -8,9 +8,10 @@ using ControlOfRealEstate.DataAccess;
 namespace ControlOfRealEstate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161109133436_AddCommentsTable")]
+    partial class AddCommentsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1");
@@ -77,15 +78,11 @@ namespace ControlOfRealEstate.DataAccess.Migrations
 
                     b.Property<int>("ForumThreadId");
 
-                    b.Property<int?>("ParentCommentId");
-
                     b.Property<DateTime?>("UpdatedAt");
 
                     b.HasKey("CommentId");
 
                     b.HasIndex("ForumThreadId");
-
-                    b.HasIndex("ParentCommentId");
 
                     b.ToTable("Comments");
                 });
@@ -277,10 +274,6 @@ namespace ControlOfRealEstate.DataAccess.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("ForumThreadId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("ControlOfRealEstate.Models.Comment", "ParentComment")
-                        .WithMany("Comments")
-                        .HasForeignKey("ParentCommentId");
                 });
 
             modelBuilder.Entity("ControlOfRealEstate.Models.ForumThread", b =>

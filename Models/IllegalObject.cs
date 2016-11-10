@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ControlOfRealEstate.Models
 {
+    /// <summary>
+    /// Нелегально построенный объект (или легально, в зависимости от результатов проверки)
+    /// </summary>
     public class IllegalObject
     {
         /// <summary>
@@ -60,8 +63,24 @@ namespace ControlOfRealEstate.Models
         /// </summary>
         public int? NeagentId { get; set; }
 
+        /// <summary>
+        /// Дата создания
+        /// </summary>
         public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Дата обновления
+        /// </summary>
         public DateTime? UpdatedAt { get; set; }
+
+        /// <summary>
+        /// Дата удаления
+        /// </summary>
         public DateTime? DeletedAt { get; set; }
+
+        /// <summary>
+        /// Обсуждения на форуме
+        /// </summary>
+        public ICollection<ForumThread> ForumThreads { get; set; }
     }
 }

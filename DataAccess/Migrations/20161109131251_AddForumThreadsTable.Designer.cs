@@ -8,9 +8,10 @@ using ControlOfRealEstate.DataAccess;
 namespace ControlOfRealEstate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161109131251_AddForumThreadsTable")]
+    partial class AddForumThreadsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1");
@@ -64,32 +65,6 @@ namespace ControlOfRealEstate.DataAccess.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ControlOfRealEstate.Models.Comment", b =>
-                {
-                    b.Property<int>("CommentId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CommentText");
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<DateTime?>("DeletedAt");
-
-                    b.Property<int>("ForumThreadId");
-
-                    b.Property<int?>("ParentCommentId");
-
-                    b.Property<DateTime?>("UpdatedAt");
-
-                    b.HasKey("CommentId");
-
-                    b.HasIndex("ForumThreadId");
-
-                    b.HasIndex("ParentCommentId");
-
-                    b.ToTable("Comments");
-                });
-
             modelBuilder.Entity("ControlOfRealEstate.Models.ForumThread", b =>
                 {
                     b.Property<int>("ForumThreadId")
@@ -109,7 +84,7 @@ namespace ControlOfRealEstate.DataAccess.Migrations
 
                     b.HasIndex("IllegalObjectId");
 
-                    b.ToTable("ForumThreads");
+                    b.ToTable("ForumThread");
                 });
 
             modelBuilder.Entity("ControlOfRealEstate.Models.IllegalObject", b =>
@@ -269,18 +244,6 @@ namespace ControlOfRealEstate.DataAccess.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("ControlOfRealEstate.Models.Comment", b =>
-                {
-                    b.HasOne("ControlOfRealEstate.Models.ForumThread", "ForumThread")
-                        .WithMany("Comments")
-                        .HasForeignKey("ForumThreadId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("ControlOfRealEstate.Models.Comment", "ParentComment")
-                        .WithMany("Comments")
-                        .HasForeignKey("ParentCommentId");
                 });
 
             modelBuilder.Entity("ControlOfRealEstate.Models.ForumThread", b =>

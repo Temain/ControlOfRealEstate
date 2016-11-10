@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ControlOfRealEstate.Models
 {
+    /// <summary>
+    /// Статус проведения проверки
+    /// </summary>
     public class IllegalObjectStatus
     {
         /// <summary>
