@@ -8,8 +8,16 @@
 <div class="pusher">
     <div class="ui container">
 
+        <a asp-controller="forum" asp-action="index" asp-route-id="@Model.IllegalObjectId" class="ui left labeled icon button">
+            <i class="left arrow icon"></i>
+            Назад
+        </a>
+
         <div class="thread-title">
-            <h1>@Model.Theme</h1>
+            <h1 class="ui header">
+                @Model.Theme
+                <div class="sub header">@Model.Description</div>
+            </h1>
         </div>
 
         <h3 class="ui dividing header">Комментарии</h3>

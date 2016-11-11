@@ -8,9 +8,8 @@
     <div class="ui container">
 
         <div class="thread-title">
-            <h1>Обсуждение на форуме</h1>
+            <h1 class="ui header">Обсуждение на форуме</h1>
             <h4>Адрес: @Model.Address</h4>
-            @*<h1>@Model.Address</h1>*@
 
             @if (Model.Description != null)
             {
@@ -28,10 +27,10 @@
             }
         </div>
 
-        <button class="ui primary button">
+        <button id="addThemeBtn" class="ui primary button header-button">
             <i class="fork icon"></i>Добавить тему
         </button>
-
+       
         @if (!Model.ForumThreads.Any())
         {
             <div class="ignored ui info message">Для данного объекта не создано ни одной темы для обсуждения.</div>
@@ -40,16 +39,45 @@
         <div class="thread-list ui relaxed divided animated list">
             @foreach (ForumThreadViewModel thread in Model.ForumThreads)
             {
-                <div class="item">
-                    @*<i class="large github middle aligned icon"></i>*@
+                <a asp-controller="forum" asp-action="thread" asp-route-id=@thread.ForumThreadId class="item">
                     <div class="right floated content">
                         <time class="timeago description" datetime="@thread.LastUpdate.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")">@thread.LastUpdate</time>
                     </div>
+                    <i class="right triangle icon"></i>
                     <div class="content">
-                        <a class="header" asp-controller="forum" asp-action="thread" asp-route-id=@thread.ForumThreadId>@thread.Theme</a>
+                        <div class="header">@thread.Theme</div>
+                        <div class="description">@thread.Description</div>
                     </div>
-                </div>
+                </a>
             }
+        </div>
+    </div>
+
+    <div class="ui modal">
+        <i class="close icon"></i>
+        <div class="header">
+            Новая тема
+        </div>
+        <div class="content">
+            <form class="ui form">
+                <div class="field">
+                    <label>Тема</label>
+                    <input type="text" name="theme" placeholder="Тема">
+                </div>
+                <div class="field">
+                    <label>Описание</label>
+                    <textarea rows="4" name="description" placeholder="Описание"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">
+                Отмена
+            </div>
+            <div class="ui positive right labeled icon button">
+                Сохранить
+                <i class="checkmark icon"></i>
+            </div>
         </div>
     </div>
 </div>
@@ -60,6 +88,9 @@
     <script>
         $(function () {
             $("time.timeago").timeago();
+            $("#addThemeBtn").click(function () {
+                $('.ui.modal').modal('show');
+            });
         });
     </script>
 }

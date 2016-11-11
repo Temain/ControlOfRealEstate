@@ -8,9 +8,10 @@ using ControlOfRealEstate.DataAccess;
 namespace ControlOfRealEstate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161111064507_AddDescriptionToForumThread")]
+    partial class AddDescriptionToForumThread
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1");

@@ -23,6 +23,11 @@ namespace ControlOfRealEstate.Models
         public string Theme { get; set; }
 
         /// <summary>
+        /// Описание
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// Объект обсуждения
         /// </summary>
         public int IllegalObjectId { get; set; }

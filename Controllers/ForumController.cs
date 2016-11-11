@@ -56,12 +56,14 @@ namespace ControlOfRealEstate.Controllers
                 {
                     ForumThreadId = x.ForumThreadId,
                     Theme = x.Theme,
+                    Description = x.Description,
                     LastUpdate = x.Comments
                         .OrderByDescending(c => c.CreatedAt)
                         .FirstOrDefault()
                         .CreatedAt
                 })
-                // .OrderByDescending(x => x.LastUpdate)
+                .ToList()
+                .OrderByDescending(x => x.LastUpdate)
                 .ToList();
 
             return View(viewModel);
@@ -80,6 +82,8 @@ namespace ControlOfRealEstate.Controllers
             var viewModel = new ForumThreadViewModel
             {
                 ForumThreadId = thread.ForumThreadId,
+                IllegalObjectId = thread.IllegalObjectId,
+                Description = thread.Description,
                 Theme = thread.Theme,
                 Comments = thread.Comments
                     .Select(x => new CommentViewModel

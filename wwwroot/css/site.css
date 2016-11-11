@@ -146,12 +146,13 @@
 /*              Форум
 ----------------------------------*/
 .thread-title {
-    margin-bottom: 36px;
+    margin-bottom: 1em;
+    margin-top: 1em;
 }
 
-/*.thread-list .item {
-    padding: 15px 0 !important;
-}*/
+.header-button {
+    margin: 1em 0 !important;
+}
 
 .ui.comments {
     max-width: none !important;
