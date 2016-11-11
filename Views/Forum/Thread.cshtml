@@ -22,7 +22,14 @@
 
         <h3 class="ui dividing header">Комментарии</h3>
 
-        @CommentHelpers.HierarchycalComments(Model.Comments)
+        @if (!Model.Comments.Any())
+        {
+            <div class="ui ignored info message">
+                В данной теме не оставлено ни одного комментария.
+            </div>
+        }
+
+        @CommentHtmlHelper.HierarchycalComments(Model.Comments)
 
         <form class="ui reply form">
             <div class="field">

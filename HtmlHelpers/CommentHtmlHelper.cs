@@ -2,10 +2,14 @@
 using System.Linq;
 using Microsoft.AspNetCore.Html;
 using ControlOfRealEstate.Models.ForumViewModels;
+using ControlOfRealEstate.TagHelpers;
+using System.Text;
+using System.Security.Cryptography;
+using System;
 
 namespace ControlOfRealEstate.HtmlHelpers
 {
-    public static class CommentHelpers
+    public static class CommentHtmlHelper
     {
         public static HtmlString HierarchycalComments(List<CommentViewModel> comments, int? parentCommentId = null)
         {
@@ -31,7 +35,7 @@ namespace ControlOfRealEstate.HtmlHelpers
                 commentHtml += 
                     $@"<div class=""comment"">
                         <a class=""avatar"">
-                            <img src=""http://semantic-ui.com/images/avatar/small/matt.jpg"">
+                            <img src=""{ToGravatarUrl("mail@mail.ru", 50)}"">
                         </a>
                         <div class=""content"">
                             <a class=""author"">Matt</a>
@@ -45,6 +49,8 @@ namespace ControlOfRealEstate.HtmlHelpers
                                 <a class=""reply"">Комментировать</a>
                             </div>";
 
+
+
                 commentHtml += HierarchyComment(allComments, childComment.CommentId);
                 commentHtml += 
                         @"</div>
@@ -57,6 +63,35 @@ namespace ControlOfRealEstate.HtmlHelpers
             }
 
             return commentHtml;
+        }
+
+        private static string ToGravatarUrl(string email, int? size)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(email.Trim()))
+                throw new ArgumentException("The email is empty.", nameof(email));
+
+            var emailHash = ToGravatarHash(email);
+
+            var imageUrl = "https://www.gravatar.com/avatar/" + emailHash;
+            if (size.HasValue)
+                imageUrl += "?s=" + size.Value;
+
+            imageUrl += "&d=mm";
+
+            return imageUrl;
+        }
+
+        private static string ToGravatarHash(string email)
+        {
+            var encoder = new UTF8Encoding();
+            var md5 = MD5.Create();
+            var hashedBytes = md5.ComputeHash(encoder.GetBytes(email.ToLower()));
+            var sb = new StringBuilder(hashedBytes.Length * 2);
+
+            for (var i = 0; i < hashedBytes.Length; i++)
+                sb.Append(hashedBytes[i].ToString("X2"));
+
+            return sb.ToString().ToLower();
         }
     }
 }

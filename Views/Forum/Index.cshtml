@@ -33,33 +33,25 @@
        
         @if (!Model.ForumThreads.Any())
         {
-            <div class="ignored ui info message">Для данного объекта не создано ни одной темы для обсуждения.</div>
+            <div id="empltyListMessage" class="ignored ui info message">Для данного объекта не создано ни одной темы для обсуждения.</div>
         }
 
         <div class="thread-list ui relaxed divided animated list">
             @foreach (ForumThreadViewModel thread in Model.ForumThreads)
             {
-                <a asp-controller="forum" asp-action="thread" asp-route-id=@thread.ForumThreadId class="item">
-                    <div class="right floated content">
-                        <time class="timeago description" datetime="@thread.LastUpdate.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")">@thread.LastUpdate</time>
-                    </div>
-                    <i class="right triangle icon"></i>
-                    <div class="content">
-                        <div class="header">@thread.Theme</div>
-                        <div class="description">@thread.Description</div>
-                    </div>
-                </a>
+                @Html.Partial("_ThreadLite", thread)
             }
         </div>
     </div>
 
-    <div class="ui modal">
-        <i class="close icon"></i>
+    <div id="addThemeModal" class="ui modal">
+        @*<i class="close icon"></i>*@
         <div class="header">
             Новая тема
         </div>
         <div class="content">
             <form class="ui form">
+                <input type="hidden" name="illegalObjectId" value="@Model.IllegalObjectId" />
                 <div class="field">
                     <label>Тема</label>
                     <input type="text" name="theme" placeholder="Тема">
@@ -88,8 +80,39 @@
     <script>
         $(function () {
             $("time.timeago").timeago();
+
+            // Правила валидации
+            $("#addThemeModal form").form({
+                fields: {
+                    illegalObjectId: 'empty',
+                    theme: 'empty',
+                    description: 'empty'
+                }
+            });
+
             $("#addThemeBtn").click(function () {
-                $('.ui.modal').modal('show');
+                $("#addThemeModal")
+                    .modal({
+                        onApprove: function () {
+                            var form = $(this).find("form");
+
+                            var isValid = form.form('is valid');
+                            if (!isValid) return false;
+
+                            var values = form.form("get values");
+
+                            var url = "@Url.Action("CreateThread", "Forum")";
+                            $.post(url, values, function (response) {
+                                if ($(".thread-list .item").length < 1) {
+                                    $("#empltyListMessage").remove();
+                                }
+
+                                $(".thread-list").prepend(response);
+                                $("time.timeago").timeago();
+                            });
+                        }
+                    })
+                    .modal("show")
             });
         });
     </script>

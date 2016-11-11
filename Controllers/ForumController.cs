@@ -19,9 +19,10 @@ namespace ControlOfRealEstate.Controllers
             _context = context;
         }
 
+        [HttpGet]
         public IActionResult Index(int? id)
         {
-            IQueryable<ForumThread> threads;
+            ICollection<ForumThread> threads;
             var viewModel = new ForumThreadGroupViewModel();
 
             if (id != null)
@@ -42,13 +43,15 @@ namespace ControlOfRealEstate.Controllers
                 threads = _context.ForumThreads
                     .Include(x => x.Comments)
                     .Where(x => x.IllegalObjectId == id)
-                    .AsNoTracking();
+                    .AsNoTracking()
+                    .ToList();
             }
             else
             {
                 threads = _context.ForumThreads
                     .Include(x => x.Comments)
-                    .AsNoTracking();
+                    .AsNoTracking()
+                    .ToList();
             }
 
             viewModel.ForumThreads = threads
@@ -58,17 +61,16 @@ namespace ControlOfRealEstate.Controllers
                     Theme = x.Theme,
                     Description = x.Description,
                     LastUpdate = x.Comments
-                        .OrderByDescending(c => c.CreatedAt)
-                        .FirstOrDefault()
-                        .CreatedAt
+                        .DefaultIfEmpty(new Comment { CreatedAt = x.CreatedAt })
+                        .Max(c => c.CreatedAt)
                 })
-                .ToList()
                 .OrderByDescending(x => x.LastUpdate)
                 .ToList();
 
             return View(viewModel);
         }
 
+        [HttpGet]
         public IActionResult Thread(int id)
         {
             var thread = _context.ForumThreads
@@ -99,6 +101,26 @@ namespace ControlOfRealEstate.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateThread(ForumThreadViewModel viewModel)
+        {
+            var thread = new ForumThread
+            {
+                IllegalObjectId = viewModel.IllegalObjectId,
+                Theme = viewModel.Theme,
+                Description = viewModel.Description,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.ForumThreads.Add(thread);
+            _context.SaveChanges();
+
+            viewModel.ForumThreadId = thread.ForumThreadId;
+            viewModel.LastUpdate = thread.CreatedAt;
+
+            return PartialView("_ThreadLite", viewModel);
         }
     }
 }

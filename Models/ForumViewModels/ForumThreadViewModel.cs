@@ -15,7 +15,7 @@ namespace ControlOfRealEstate.Models.ForumViewModels
         /// <summary>
         /// Идентификатор объекта обсуждения
         /// </summary>
-        public int? IllegalObjectId { get; set; }
+        public int IllegalObjectId { get; set; }
 
         /// <summary>
         /// Тема обсуждения
