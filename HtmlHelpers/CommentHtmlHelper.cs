@@ -38,6 +38,7 @@ namespace ControlOfRealEstate.HtmlHelpers
                             <img src=""{ToGravatarUrl("mail@mail.ru", 50)}"">
                         </a>
                         <div class=""content"">
+                            <input type=""hidden"" class=""comment-id"" value=""{childComment.CommentId}"" />
                             <a class=""author"">Matt</a>
                             <div class=""metadata"">
                                 <time class=""timeago date"" datetime=""{childComment.CreatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")}"">{childComment.CreatedAt}</time>
@@ -46,7 +47,7 @@ namespace ControlOfRealEstate.HtmlHelpers
                                 {childComment.CommentText}
                             </div>
                             <div class=""actions"">
-                                <a class=""reply"">Комментировать</a>
+                                <a class=""reply"">ответить</a>
                             </div>";
 
 
@@ -65,7 +66,7 @@ namespace ControlOfRealEstate.HtmlHelpers
             return commentHtml;
         }
 
-        private static string ToGravatarUrl(string email, int? size)
+        public static string ToGravatarUrl(string email, int? size)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(email.Trim()))
                 throw new ArgumentException("The email is empty.", nameof(email));

@@ -24,18 +24,24 @@
 
         @if (!Model.Comments.Any())
         {
-            <div class="ui ignored info message">
+            <div id="empltyListMessage" class="ui ignored info message">
                 В данной теме не оставлено ни одного комментария.
             </div>
         }
 
-        @CommentHtmlHelper.HierarchycalComments(Model.Comments)
+        <div id="commentsList">
+            @CommentHtmlHelper.HierarchycalComments(Model.Comments)
+        </div>
 
-        <form class="ui reply form">
+        <h4 id="commentLink" class="comment-link"><a href="#">Написать комментарий</a></h4>
+
+        <form id="replyForm" class="ui reply form">
+            <input type="hidden" name="forumThreadId" value="@Model.ForumThreadId" />
+            <input type="hidden" id="parentCommentId" name="parentCommentId" />
             <div class="field">
-                <textarea></textarea>
+                <textarea name="commentText"></textarea>
             </div>
-            <div class="ui primary submit labeled icon button">
+            <div id="replyBtn" class="ui primary labeled icon button">
                 <i class="icon edit"></i> Отправить
             </div>
         </form>
@@ -49,12 +55,24 @@
         $(function () {
             $("time.timeago").timeago();
 
+            // Правила валидации
+            $("#replyForm").form({
+                fields: {
+                    commentText: 'empty',
+                }
+            });
+
+            // Ответ на комментарий
             $("a.reply").click(function () {
                 var replyLink = $(this);
-                var replyForm = $(".reply.form");
+                var replyForm = $("#replyForm");
 
                 var replyLinkComment = replyLink.closest(".comment");
                 var replyFormComment = replyForm.closest(".comment");
+
+                var parentCommentId = replyLinkComment.find(".comment-id").val();
+                replyForm.find("#parentCommentId").val(parentCommentId);
+
                 if (replyLinkComment.is(replyFormComment)) {
                     var isVisible = replyForm.is(":visible");
                     if (isVisible) {
@@ -71,6 +89,53 @@
 
                 var currentComment = $(this).closest(".comment > .content");
                 currentComment.append(replyForm);
+            });
+
+            $("#commentLink > a").click(function () {
+                var replyForm = $("#replyForm");
+                replyForm.show();
+
+                var replyFormComment = replyForm.closest(".comment");
+                replyFormComment.find("#parentCommentId").val("");
+
+                $("#commentLink").after(replyForm);
+            });
+
+            // Добавление комментария
+            $("#replyBtn").click(function () {
+                var replyForm = $("#replyForm");
+
+                var isValid = replyForm.form('is valid');
+                if (!isValid) return false;
+
+                var values = replyForm.form("get values");
+
+                var url = "@Url.Action("CreateComment", "Forum")";
+                $.post(url, values, function (response) {
+                    if ($("#commentsList .comments").length < 1) {
+                        $("#empltyListMessage").remove();
+                    }
+
+                    var parentCommentId = replyForm.find("#parentCommentId").val();
+                    if (parentCommentId) {
+                        var placeForAppend = $(".comment-id:input[value='" + parentCommentId + "']").closest(".content");
+
+                        var wrapper = placeForAppend.find(".comments");
+                        if (!wrapper.length) {
+                            placeForAppend.append("<div class='comments ui'></div>");
+                            wrapper = placeForAppend.find(".comments");
+                        }
+
+                        wrapper.prepend(response);
+                    } else {
+                        $("#commentsList > .comments").prepend(response);
+                    }
+
+                    $("time.timeago").timeago();
+
+                    replyForm.form("reset");
+                    replyForm.hide();
+                });
             });
         });
     </script>

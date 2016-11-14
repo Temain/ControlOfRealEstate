@@ -1,0 +1,21 @@
+﻿@using ControlOfRealEstate.HtmlHelpers;
+@model ControlOfRealEstate.Models.ForumViewModels.CommentViewModel
+
+<div class="comment">
+    <a class="avatar">
+        <img src="@CommentHtmlHelper.ToGravatarUrl("mail@mail.ru", 50)">
+    </a>
+    <div class="content">
+        <input type="hidden" name="commentId" value="@Model.CommentId" />
+        <a class="author">Matt</a>
+        <div class="metadata">
+            <time class="timeago date" datetime="@Model.CreatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")">@Model.CreatedAt</time>
+        </div>
+        <div class="text">
+            @Model.CommentText
+        </div>
+        <div class="actions">
+            <a class="reply">ответить</a>
+        </div>
+    </div>
+</div>

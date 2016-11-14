@@ -36,7 +36,7 @@
             <div id="empltyListMessage" class="ignored ui info message">Для данного объекта не создано ни одной темы для обсуждения.</div>
         }
 
-        <div class="thread-list ui relaxed divided animated list">
+        <div id="threadsList" class="ui relaxed divided animated list">
             @foreach (ForumThreadViewModel thread in Model.ForumThreads)
             {
                 @Html.Partial("_ThreadLite", thread)
@@ -90,24 +90,26 @@
                 }
             });
 
+            // Добавление темы обсуждения
             $("#addThemeBtn").click(function () {
+                $("#addThemeModal form").form("reset");
                 $("#addThemeModal")
                     .modal({
                         onApprove: function () {
-                            var form = $(this).find("form");
+                            var addThemeForm = $(this).find("form");
 
-                            var isValid = form.form('is valid');
+                            var isValid = addThemeForm.form('is valid');
                             if (!isValid) return false;
 
-                            var values = form.form("get values");
+                            var values = addThemeForm.form("get values");
 
                             var url = "@Url.Action("CreateThread", "Forum")";
                             $.post(url, values, function (response) {
-                                if ($(".thread-list .item").length < 1) {
+                                if ($("#threadsList .item").length < 1) {
                                     $("#empltyListMessage").remove();
                                 }
 
-                                $(".thread-list").prepend(response);
+                                $("#threadsList").prepend(response);
                                 $("time.timeago").timeago();
                             });
                         }

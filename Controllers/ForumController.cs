@@ -122,5 +122,25 @@ namespace ControlOfRealEstate.Controllers
 
             return PartialView("_ThreadLite", viewModel);
         }
+
+        [HttpPost]
+        public IActionResult CreateComment(CommentViewModel viewModel)
+        {
+            var comment = new Comment
+            {
+                ForumThreadId = viewModel.ForumThreadId,
+                CommentText = viewModel.CommentText,
+                ParentCommentId = viewModel.ParentCommentId,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
+
+            viewModel.CommentId = comment.CommentId;
+            viewModel.CreatedAt = comment.CreatedAt;
+
+            return PartialView("_Comment", viewModel);
+        }
     }
 }
