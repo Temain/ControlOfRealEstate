@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using ControlOfRealEstate.DataAccess;
 using ControlOfRealEstate.Models.IllegalObjectViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControlOfRealEstate.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;

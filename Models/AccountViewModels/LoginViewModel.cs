@@ -8,11 +8,11 @@ namespace ControlOfRealEstate.Models.AccountViewModels
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "¬ведите адрес электронной почты")]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "¬ведите пароль")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

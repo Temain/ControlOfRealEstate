@@ -99,7 +99,7 @@
 }*/
 
 .pusher {
-    padding-top: 53px;
+    padding-top: 100px;
 }
 
 .ui.sidebar.menu {
@@ -131,6 +131,24 @@
     margin-bottom: 0em !important;
 }
 
+/*          Для футера
+----------------------------------*/
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.page-wrapper {
+    min-height: 100%;
+    margin-bottom: -50px;
+}
+* html .page-wrapper {
+    height: 100%;
+}
+.page-buffer {
+    height: 50px;
+}
+
 /*   Обозначение меток на карте
 ----------------------------------*/
 .map-marks {
@@ -139,6 +157,18 @@
     top: 2px;
     opacity: 0.8;
     padding: 5px 10px 0px 10px !important;
+    /*width: 200px;*/
+    z-index: 1;
+}
+
+/*  Панель пользователя на карте
+----------------------------------*/
+.user-panel {
+    position: absolute !important;
+    right: 16px;
+    top: 2px;
+    opacity: 0.8;
+    padding: 5px 0px 5px 0px !important;
     /*width: 200px;*/
     z-index: 1;
 }

@@ -19,6 +19,10 @@
         }
     </div>
 
+    <div class="ui horizontal segments user-panel">
+        @Html.Partial("_LoginPartialFixed")
+    </div>
+
     <div id="map" style="height: 100vh;"></div>
 </div>
 
@@ -84,7 +88,7 @@
                         var coordinates = [obj.latitude, obj.longitude];
                         var placemark = new ymaps.Placemark(coordinates, {
                             hintContent: obj.address,
-                            balloonContent: "<br/>Адрес: " + obj.address + "<br/>Статус: " + obj.statusName + "<br/><br/><a href='/forum/" + obj.illegalObjectId + "' target='_blank'>Обсуждение на форуме</a>"
+                            balloonContent: "<br/>Адрес: " + obj.address + "<br/>Статус: " + obj.statusName + "<br/><br/><a href='/forum/" + obj.illegalObjectId + "' >Обсуждение на форуме</a>"
                         }, {
                             // Опции.
                             // Необходимо указать данный тип макета.
@@ -108,7 +112,7 @@
 
                 $('#loader').hide();
                 $('#mapContainer').show();
-            }, 3000);
+            }, 2000);
         }
     </script>
 } 
