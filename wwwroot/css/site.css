@@ -173,6 +173,17 @@ html, body {
     z-index: 1;
 }
 
+/*.user-actions {
+    position: absolute !important;
+    left: 50%;
+    margin-left: -100px; 
+    top: 2px;
+    opacity: 0.8;
+    padding: 5px 0px 5px 0px !important;
+    width: 200px;
+    z-index: 1;
+}*/
+
 /*              Форум
 ----------------------------------*/
 .thread-title {

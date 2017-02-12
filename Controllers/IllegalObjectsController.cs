@@ -30,10 +30,16 @@ namespace ControlOfRealEstate.Controllers
         }
 
         [HttpGet("")]
-        public List<IllegalObjectViewModel> Get()
+        public List<IllegalObjectViewModel> Get(int? illegalObjectStatusId)
         {
-            var illegalObjects = _context.IllegalObjects
-                .AsNoTracking()
+            var illegalObjects = _context.IllegalObjects.AsNoTracking();
+
+            if (illegalObjectStatusId != null)
+            {
+                illegalObjects = illegalObjects.Where(x => x.StatusId == illegalObjectStatusId);
+            }
+
+            var illegalObjectsList = illegalObjects
                 .Select(x => new IllegalObjectViewModel
                 {
                     IllegalObjectId = x.IllegalObjectId,
@@ -47,7 +53,7 @@ namespace ControlOfRealEstate.Controllers
                 })
                 .ToList();
 
-            return illegalObjects;
+            return illegalObjectsList;
         }
 
         [HttpGet("parse")]
