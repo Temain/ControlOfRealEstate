@@ -26,6 +26,7 @@
     <div id="map" style="height: 100vh;"></div>
 </div>
 
+@Html.Partial("_GetGeopositionModal")
 @Html.Partial("_AddObjectModal")
 
 @section Scripts {
@@ -45,10 +46,22 @@
             // Добавление нового объекта
             $("#addObjectBtn").click(function () {
                 var handler = myMap.events.group();
-                // var cursor = myMap.cursors.push('crosschair');
 
-                $("#addObjectModal form").form("reset");
+                $('.coupled.modal')
+                    .modal({
+                        allowMultiple: false
+                    });
+
+                // $("#addObjectModal form").form("reset");
                 $("#addObjectModal")
+                    .modal({
+                        closable: false,
+                        // blurring: true
+                    })
+                    .modal('attach events', '#getGeopositionModal .positive.button');
+
+                $("#getGeopositionModal form").form("reset");
+                $("#getGeopositionModal")
                     .modal({
                         closable: false,
                         dimmerSettings: {
@@ -58,15 +71,19 @@
                             turnOnAddObjectMode(handler);
 
                             $(".ui.dimmer.modals").removeClass('dimmer');
-                            $('#addObjectModal').css('margin-top', 0);
-                            $('#addObjectModal').css('top', '1em');
+                            $('#getGeopositionModal').css('margin-top', 0);
+                            $('#getGeopositionModal').css('top', '1em');
                         },
                         onHide: function () {
                             turnOffAddObjectMode(handler);
-                            // cursor.remove();
+                            
+                            $(".ui.modals").addClass('dimmer');
                         },
                         onApprove: function () {
-                            var addObjectForm = $(this).find("form");
+                            //$("#addObjectModal")
+                            //    .modal("show");
+
+                            @*var addObjectForm = $(this).find("form");
 
                             var isValid = addObjectForm.form('is valid');
                             if (!isValid) return false;
@@ -81,7 +98,7 @@
 
                                 $("#threadsList").prepend(response);
                                 $("time.timeago").timeago();
-                            });
+                            });*@
                         }
                     })
                     .modal("show");
@@ -177,6 +194,9 @@
         function turnOnAddObjectMode(handler) {
             myMap.geoObjects.removeAll();
 
+            var addressFieldInModal = $('#getGeopositionModal #address');
+            addressFieldInModal.val('');
+
             handler.add('click', function (e) {
                 var coords = e.get('coords');
                               
@@ -191,7 +211,6 @@
                     });
 
                     if (names.length) {
-                        var addressFieldInModal = $('#addObjectModal #address');
                         addressFieldInModal.val('');
                         addressFieldInModal.val(names[0]);
 

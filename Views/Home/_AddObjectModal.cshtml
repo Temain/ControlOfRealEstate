@@ -1,17 +1,18 @@
-﻿<div id="addObjectModal" class="ui small modal">
+﻿<div id="addObjectModal" class="ui modal">
     @*<i class="close icon"></i>*@
     <div class="header">
-        Местоположение
+        Заполните форму
     </div>
     <div class="content">
-        @*<div class="ignored ui info message">
-            Отметьте на карте объект незаконного строительства.
-        </div>*@
-
         <form class="ui form">
+            <input type="hidden" name="illegalObjectId" value="" />
+            @*<div class="field">
+                <label>Тема</label>
+                <input type="text" name="theme" placeholder="Тема">
+            </div>*@
             <div class="field">
-                @*<label>Адрес</label>*@
-                <input id="address" type="text" name="address" placeholder="Отметьте на карте объект незаконного строительства.">
+                <label>Описание нарушения</label>
+                <textarea rows="4" name="description" placeholder="Описание"></textarea>
             </div>
         </form>
     </div>
@@ -20,8 +21,8 @@
             Отмена
         </div>
         <div class="ui positive right labeled icon button">
-            Далее
-            <i class="arrow right icon"></i>
+            Сохранить
+            <i class="checkmark icon"></i>
         </div>
     </div>
 </div>
