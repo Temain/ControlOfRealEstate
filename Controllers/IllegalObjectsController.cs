@@ -6,8 +6,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ControlOfRealEstate.DataAccess;
 using ControlOfRealEstate.Models;
+using ControlOfRealEstate.Models.IllegalObjectViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,11 +24,14 @@ namespace ControlOfRealEstate.Controllers
     {
         private readonly IHostingEnvironment _appEnvironment;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public IllegalObjectsController(IHostingEnvironment appEnvironment, ApplicationDbContext context)
+        public IllegalObjectsController(IHostingEnvironment appEnvironment, ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _appEnvironment = appEnvironment;
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet("")]
@@ -54,6 +59,42 @@ namespace ControlOfRealEstate.Controllers
                 .ToList();
 
             return illegalObjectsList;
+        }
+
+        // POST: api/illegal/
+        [HttpPost]
+        [Route("")]
+        public async Task<IActionResult> Create(CreateIllegalObjectViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+                var illegalObject = new IllegalObject
+                {
+                    Address = viewModel.Address,
+                    ApplicationUserId = user.Id,
+                    Description = viewModel.Description,
+                    Latitude = viewModel.Latitude,
+                    Longitude = viewModel.Longitude,
+                    StatusId = IllegalObjectStatuses.OnReview,
+                    CreatedAt = DateTime.Now
+                };
+
+                _context.IllegalObjects.Add(illegalObject);
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("parse")]
@@ -118,7 +159,7 @@ namespace ControlOfRealEstate.Controllers
         }
 
         /// <summary>
-        /// Получения детального описания объектов незаконного строительства
+        /// Получение детального описания объектов незаконного строительства
         /// </summary>
         private void GetDescription(List<IllegalObjectViewModel> illegalObjects)
         {

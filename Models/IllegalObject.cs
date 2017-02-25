@@ -34,6 +34,13 @@ namespace ControlOfRealEstate.Models
         public IllegalObjectStatus Status { get; set; }
 
         /// <summary>
+        /// Пользователь, подавший информацию об объекте
+        /// </summary>
+        [ForeignKey("ApplicationUser")]
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
+
+        /// <summary>
         /// Описание
         /// </summary>
         public string Description { get; set; }

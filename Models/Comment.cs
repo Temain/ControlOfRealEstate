@@ -36,6 +36,13 @@ namespace ControlOfRealEstate.Models
         public Comment ParentComment { get; set; }
 
         /// <summary>
+        /// Пользователь, добавивший комментарий
+        /// </summary>
+        [ForeignKey("ApplicationUser")]
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
+
+        /// <summary>
         /// Дата создания
         /// </summary>
         public DateTime CreatedAt { get; set; }

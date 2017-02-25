@@ -34,6 +34,13 @@ namespace ControlOfRealEstate.Models
         public IllegalObject IllegalObject { get; set; }
 
         /// <summary>
+        /// Пользователь, добавивший ветку
+        /// </summary>
+        [ForeignKey("ApplicationUser")]
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
+
+        /// <summary>
         /// Дата создания
         /// </summary>
         public DateTime CreatedAt { get; set; }

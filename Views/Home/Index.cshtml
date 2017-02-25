@@ -39,7 +39,7 @@
             // Фильтрация объектов по статусу
             $('.map-marks a').click(function () {
                 var statusId = $(this).attr('data-status-id');
-                
+
                 getIllegal(statusId);
             });
 
@@ -52,15 +52,39 @@
                         allowMultiple: false
                     });
 
-                // $("#addObjectModal form").form("reset");
+                // Модальное окно сохранения нового объекта
+                $("#addObjectModal form").form("reset");
+                $("#addObjectModal form").form({
+                    fields: { description: 'empty' }
+                });
                 $("#addObjectModal")
                     .modal({
                         closable: false,
-                        // blurring: true
+                        onApprove: function () {
+                            var addObjectForm = $(this).find("form");
+
+                            var isValid = addObjectForm.form('is valid');
+                            if (!isValid) return false;
+
+                            var values = addObjectForm.form("get values");
+
+                            var url = "/api/illegal/";
+                            $.post(url, values)
+                                .success(function (response) {
+                                    alert('success');
+                                })
+                                .error(function () {
+                                    alert('error');
+                                });
+                        }
                     })
                     .modal('attach events', '#getGeopositionModal .positive.button');
 
+                // Модальное окно выбора объекта
                 $("#getGeopositionModal form").form("reset");
+                $("#getGeopositionModal form").form({
+                    fields: { address: 'empty' }
+                });
                 $("#getGeopositionModal")
                     .modal({
                         closable: false,
@@ -76,29 +100,23 @@
                         },
                         onHide: function () {
                             turnOffAddObjectMode(handler);
-                            
+
                             $(".ui.modals").addClass('dimmer');
                         },
                         onApprove: function () {
-                            //$("#addObjectModal")
-                            //    .modal("show");
+                            var getGeopositionForm = $(this).find("form");
 
-                            @*var addObjectForm = $(this).find("form");
-
-                            var isValid = addObjectForm.form('is valid');
+                            var isValid = getGeopositionForm.form('is valid');
                             if (!isValid) return false;
 
-                            var values = addObjectForm.form("get values");
+                            var values = getGeopositionForm.form("get values");
+                            var latitude = (coords[0] + '').replace('.', ',');
+                            var longitude = (coords[1] + '').replace('.', ',');
 
-                            var url = "@Url.Action("CreateThread", "Forum")";
-                            $.post(url, values, function (response) {
-                                if ($("#threadsList .item").length < 1) {
-                                    $("#empltyListMessage").remove();
-                                }
-
-                                $("#threadsList").prepend(response);
-                                $("time.timeago").timeago();
-                            });*@
+                            var addObjectForm = $("#addObjectModal").find("form");
+                            addObjectForm.find("#addObjectAddress").val(values["address"]);
+                            addObjectForm.find("#addObjectLatitude").val(latitude);
+                            addObjectForm.find("#addObjectLongitude").val(longitude);
                         }
                     })
                     .modal("show");
@@ -191,15 +209,17 @@
         };
 
         var objectPlacemark = {};
+        var coords = {};
         function turnOnAddObjectMode(handler) {
             myMap.geoObjects.removeAll();
+            coords = {};
 
             var addressFieldInModal = $('#getGeopositionModal #address');
             addressFieldInModal.val('');
 
             handler.add('click', function (e) {
-                var coords = e.get('coords');
-                              
+                coords = e.get('coords');
+
                 // Отправим запрос на геокодирование.
                 ymaps.geocode(coords).then(function (res) {
                     var names = [];
@@ -231,7 +251,7 @@
                             preset: 'twirl#redStretchyIcon',
                             balloonMaxWidth: '250'
                         });
-                    }                 
+                    }
                 });
             });
         };
