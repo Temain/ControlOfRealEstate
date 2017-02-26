@@ -6,6 +6,7 @@ using ControlOfRealEstate.DataAccess;
 using ControlOfRealEstate.Models;
 using ControlOfRealEstate.Models.ForumViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +15,12 @@ namespace ControlOfRealEstate.Controllers
     public class ForumController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ForumController(ApplicationDbContext context)
+        public ForumController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -109,13 +112,16 @@ namespace ControlOfRealEstate.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult CreateThread(ForumThreadViewModel viewModel)
+        public async Task<IActionResult> CreateThread(ForumThreadViewModel viewModel)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var thread = new ForumThread
             {
                 IllegalObjectId = viewModel.IllegalObjectId,
                 Theme = viewModel.Theme,
                 Description = viewModel.Description,
+                ApplicationUserId = user.Id,
                 CreatedAt = DateTime.Now
             };
 
@@ -130,13 +136,16 @@ namespace ControlOfRealEstate.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult CreateComment(CommentViewModel viewModel)
+        public async Task<IActionResult> CreateComment(CommentViewModel viewModel)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var comment = new Comment
             {
                 ForumThreadId = viewModel.ForumThreadId,
                 CommentText = viewModel.CommentText,
                 ParentCommentId = viewModel.ParentCommentId,
+                ApplicationUserId = user.Id,
                 CreatedAt = DateTime.Now
             };
 
@@ -145,6 +154,8 @@ namespace ControlOfRealEstate.Controllers
 
             viewModel.CommentId = comment.CommentId;
             viewModel.CreatedAt = comment.CreatedAt;
+            viewModel.UserName = user.UserName;
+            viewModel.Email = user.Email;
 
             return PartialView("_Comment", viewModel);
         }

@@ -1,12 +1,14 @@
 ﻿@using ControlOfRealEstate.HtmlHelpers;
 @using ControlOfRealEstate.Models.ForumViewModels;
+
+@inject SignInManager<ApplicationUser> SignInManager
+
 @model ForumThreadViewModel
 @{
     Layout = "_LayoutForum";
     ViewBag.Title = "Обсуждение | Система контроля недвижимости";
+    var isAuthenticated = SignInManager.IsSignedIn(User);
 }
-
-@inject SignInManager<ApplicationUser> SignInManager
 
 <div class="pusher">
     <div class="ui container">
@@ -33,10 +35,10 @@
         }
 
         <div id="commentsList">
-            @CommentHtmlHelper.HierarchycalComments(Model.Comments)
+            @CommentHtmlHelper.HierarchycalComments(Model.Comments, isAuthenticated: isAuthenticated)
         </div>
 
-        @if (SignInManager.IsSignedIn(User))
+        @if (isAuthenticated)
         {
             <h4 id="commentLink" class="comment-link"><a href="#">Написать комментарий</a></h4>
 
@@ -72,36 +74,7 @@
                 fields: {
                     commentText: 'empty',
                 }
-            });
-
-            // Ответ на комментарий
-            $("a.reply").click(function () {
-                var replyLink = $(this);
-                var replyForm = $("#replyForm");
-
-                var replyLinkComment = replyLink.closest(".comment");
-                var replyFormComment = replyForm.closest(".comment");
-
-                var parentCommentId = replyLinkComment.find(".comment-id").val();
-                replyForm.find("#parentCommentId").val(parentCommentId);
-
-                if (replyLinkComment.is(replyFormComment)) {
-                    var isVisible = replyForm.is(":visible");
-                    if (isVisible) {
-                        replyForm.hide();
-                    } else {
-                        replyForm.show();
-                    }
-                } else {
-                    replyForm.show();
-                }
-
-                var replyFormTextArea = replyForm.find("textarea");
-                replyFormTextArea.val('');
-
-                var currentComment = $(this).closest(".comment > .content");
-                currentComment.append(replyForm);
-            });
+            });           
 
             $("#commentLink > a").click(function () {
                 var replyForm = $("#replyForm");
@@ -140,6 +113,11 @@
 
                         wrapper.prepend(response);
                     } else {
+                        var commentsBlock = $("#commentsList > .comments");
+                        if (!commentsBlock.length) {
+                            $("#commentsList").append("<div class='comments ui'></div>");
+                        }
+                      
                         $("#commentsList > .comments").prepend(response);
                     }
 
@@ -147,8 +125,44 @@
 
                     replyForm.form("reset");
                     replyForm.hide();
+
+                    bindEvents();
                 });
             });
+
+            bindEvents();
         });
+
+        function bindEvents() {
+            // Ответ на комментарий
+            $('a.reply').unbind('click');
+            $("a.reply").click(function () {
+                var replyLink = $(this);
+                var replyForm = $("#replyForm");
+
+                var replyLinkComment = replyLink.closest(".comment");
+                var replyFormComment = replyForm.closest(".comment");
+
+                var parentCommentId = replyLinkComment.find(".comment-id").val();
+                replyForm.find("#parentCommentId").val(parentCommentId);
+
+                if (replyLinkComment.is(replyFormComment)) {
+                    var isVisible = replyForm.is(":visible");
+                    if (isVisible) {
+                        replyForm.hide();
+                    } else {
+                        replyForm.show();
+                    }
+                } else {
+                    replyForm.show();
+                }
+
+                var replyFormTextArea = replyForm.find("textarea");
+                replyFormTextArea.val('');
+
+                var currentComment = $(this).closest(".comment > .content");
+                currentComment.append(replyForm);
+            });
+        }
     </script>
 }
