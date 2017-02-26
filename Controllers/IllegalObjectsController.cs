@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ControlOfRealEstate.DataAccess;
 using ControlOfRealEstate.Models;
 using ControlOfRealEstate.Models.IllegalObjectViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -64,6 +65,7 @@ namespace ControlOfRealEstate.Controllers
         // POST: api/illegal/
         [HttpPost]
         [Route("")]
+        [Authorize]
         public async Task<IActionResult> Create(CreateIllegalObjectViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -97,6 +99,7 @@ namespace ControlOfRealEstate.Controllers
             }
         }
 
+        [Authorize("Administrator")]
         [HttpGet("parse")]
         public IActionResult Parse()
         {

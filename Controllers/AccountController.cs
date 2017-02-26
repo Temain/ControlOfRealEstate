@@ -11,12 +11,14 @@ using Microsoft.Extensions.Logging;
 using ControlOfRealEstate.Models;
 using ControlOfRealEstate.Models.AccountViewModels;
 using ControlOfRealEstate.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ControlOfRealEstate.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -24,12 +26,14 @@ namespace ControlOfRealEstate.Controllers
         private readonly ILogger _logger;
 
         public AccountController(
+            RoleManager<IdentityRole> roleManager,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -43,8 +47,51 @@ namespace ControlOfRealEstate.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
+            // CreateUsers();
+
             ViewData["ReturnUrl"] = returnUrl;
             return View();
+        }
+
+        public async void CreateUsers()
+        {
+            var roleExists = await _roleManager.RoleExistsAsync("Administrator");
+            if (!roleExists)
+            {
+                var role = new IdentityRole("Administrator");
+                await _roleManager.CreateAsync(role);
+            }
+
+            roleExists = await _roleManager.RoleExistsAsync("User");
+            if (!roleExists)
+            {
+                var role = new IdentityRole("User");
+                await _roleManager.CreateAsync(role);
+            }
+
+            var admin = new ApplicationUser { UserName = "admin@mail.ru", Email = "admin@mail.ru" };
+            var adminExists = await _userManager.FindByNameAsync("admin@mail.ru") != null;
+            if (!adminExists)
+            {
+                var result = await _userManager.CreateAsync(admin, "1973648205_qQ");
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(admin, "Administrator");
+                }
+            }
+
+            var user = new ApplicationUser { UserName = "user@mail.ru", Email = "user@mail.ru" };
+            var userExits = await _userManager.FindByNameAsync("user@mail.ru") != null;
+            if (!userExits)
+            {
+                var result = await _userManager.CreateAsync(user, "1973648205_qQ");
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
+                }
+            }
         }
 
         //
@@ -59,7 +106,7 @@ namespace ControlOfRealEstate.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
@@ -105,7 +152,7 @@ namespace ControlOfRealEstate.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

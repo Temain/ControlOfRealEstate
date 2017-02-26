@@ -11,14 +11,14 @@ namespace ControlOfRealEstate.HtmlHelpers
 {
     public static class CommentHtmlHelper
     {
-        public static HtmlString HierarchycalComments(List<CommentViewModel> comments, int? parentCommentId = null)
+        public static HtmlString HierarchycalComments(List<CommentViewModel> comments, int? parentCommentId = null, bool isAuthenticated = false)
         {
-            var commentsHtml = HierarchyComment(comments, parentCommentId);
+            var commentsHtml = HierarchyComment(comments, parentCommentId, isAuthenticated);
 
             return new HtmlString(commentsHtml);
         }
 
-        private static string HierarchyComment(List<CommentViewModel> allComments, int? parentCommentId)
+        private static string HierarchyComment(List<CommentViewModel> allComments, int? parentCommentId, bool isAuthenticated)
         {
             var commentHtml = "";
             var childComments = allComments
@@ -35,24 +35,26 @@ namespace ControlOfRealEstate.HtmlHelpers
                 commentHtml += 
                     $@"<div class=""comment"">
                         <a class=""avatar"">
-                            <img src=""{ToGravatarUrl("mail@mail.ru", 50)}"">
+                            <img src=""{ToGravatarUrl(childComment.Email, 50)}"">
                         </a>
                         <div class=""content"">
                             <input type=""hidden"" class=""comment-id"" value=""{childComment.CommentId}"" />
-                            <a class=""author"">Matt</a>
+                            <a class=""author"">{childComment.UserName.ToLower()}</a>
                             <div class=""metadata"">
                                 <time class=""timeago date"" datetime=""{childComment.CreatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")}"">{childComment.CreatedAt}</time>
                             </div>
                             <div class=""text"">
                                 {childComment.CommentText}
-                            </div>
+                            </div>";
+                if (isAuthenticated)
+                {
+                    commentHtml += @"
                             <div class=""actions"">
                                 <a class=""reply"">ответить</a>
                             </div>";
+                }
 
-
-
-                commentHtml += HierarchyComment(allComments, childComment.CommentId);
+                commentHtml += HierarchyComment(allComments, childComment.CommentId, isAuthenticated);
                 commentHtml += 
                         @"</div>
                     </div>";

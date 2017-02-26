@@ -2,17 +2,22 @@
 @using ControlOfRealEstate.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@{ 
+    var user = await UserManager.GetUserAsync(User);
+}
+
 @if (SignInManager.IsSignedIn(User))
 {
     <div class="right menu">
         <div class="item">
-            @*<i class="big spy icon"></i>*@
-            @*<a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">@UserManager.GetUserName(User)</a>,*@
-            @*<i class="big power icon"></i>*@
-
             <div class="ui compact menu" style="border: none; box-shadow: none;">
                 <div class="ui simple dropdown item" style="padding: 0px 15px;">
-                    <i class="big spy icon"></i> @UserManager.GetUserName(User) <i class="dropdown icon"></i> <div class="menu">
+                    <i class="big spy icon"></i>
+                    <div style="min-width: 100px;">
+                        <span>@user.UserName</span><br />
+                        <small>@user.Email</small>
+                    </div>
+                    <i class="dropdown icon"></i> <div class="menu">
                         <div class="item">Профиль</div>
                         <div class="divider"></div>
                         <div class="item" id="logoutLink" onclick="$('#logoutForm').submit();">Выход</div>
@@ -28,12 +33,23 @@
 }
 else
 {
-    @*<div class="right menu">
-            <div class="item">
-                <a class="ui button" href="/Account/Login">Log in</a>
+    <div class="right menu">
+        <div class="item">
+            <div class="ui compact menu" style="border: none; box-shadow: none; min-width: 80px;">
+                <div class="item">
+                    <a href="@Url.Action("Login", "Account")" style="color: black;">
+                        <i class="large sign in icon"></i>
+                        Войти
+                    </a>
+                </div>
+                @*<div class="item">
+                        <a href="@Url.Action("Register", "Account")">Регистрация</a>
+                    </div>*@
             </div>
-            <div class="item">
-                <a class="ui primary button" href="/Account/Register">Sign Up</a>
-            </div>
-        </div>*@
+
+            <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" style="display: none;">
+                <button type="submit" id="logoutBtn" class="ui">Выход</button>
+            </form>
+        </div>
+    </div>
 }

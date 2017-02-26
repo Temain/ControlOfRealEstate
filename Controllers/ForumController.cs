@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ControlOfRealEstate.DataAccess;
 using ControlOfRealEstate.Models;
 using ControlOfRealEstate.Models.ForumViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -75,6 +76,7 @@ namespace ControlOfRealEstate.Controllers
         {
             var thread = _context.ForumThreads
                 .Include(x => x.Comments)
+                .ThenInclude(x => x.ApplicationUser)
                 .FirstOrDefault(x => x.ForumThreadId == id);
             if (thread == null)
             {
@@ -91,6 +93,8 @@ namespace ControlOfRealEstate.Controllers
                     .Select(x => new CommentViewModel
                     {
                         CommentId = x.CommentId,
+                        UserName = x.ApplicationUser.UserName,
+                        Email = x.ApplicationUser.Email,
                         CommentText = x.CommentText,
                         ForumThreadId = x.ForumThreadId,
                         ParentCommentId = x.ParentCommentId,
@@ -103,6 +107,7 @@ namespace ControlOfRealEstate.Controllers
             return View(viewModel);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult CreateThread(ForumThreadViewModel viewModel)
         {
@@ -123,6 +128,7 @@ namespace ControlOfRealEstate.Controllers
             return PartialView("_ThreadLite", viewModel);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult CreateComment(CommentViewModel viewModel)
         {

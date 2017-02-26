@@ -1,16 +1,23 @@
 ﻿@model RegisterViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Регистрация";
+    Layout = "_LayoutForum";
 }
 
 <div class="ui raised very padded text container" style="margin-top: 10em;">
     <h1 class="ui header centered">Регистрация</h1>
 
     <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="ui large form validate-me" role="form">
-        <div class="ui stacked segment">
+        <div class="ui stacked">
             <div class="field">
                 <div class="ui left icon input">
                     <i class="user icon"></i>
+                    <input asp-for="UserName" placeholder="Имя пользователя" />
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="mail icon"></i>
                     <input asp-for="Email" placeholder="Адрес электронной почты" />
                 </div>
             </div>

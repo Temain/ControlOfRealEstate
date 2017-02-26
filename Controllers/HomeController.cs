@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ControlOfRealEstate.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;

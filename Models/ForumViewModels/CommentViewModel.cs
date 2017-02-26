@@ -18,6 +18,16 @@ namespace ControlOfRealEstate.Models.ForumViewModels
         public string CommentText { get; set; }
 
         /// <summary>
+        /// Автор комментария
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
+        /// Электронный адрес автора
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
         /// Ветка форума
         /// </summary>
         public int ForumThreadId { get; set; }

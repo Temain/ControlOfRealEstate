@@ -8,6 +8,7 @@
     "semantic": "2.2.2",
     "knockout": "3.4.0",
     "knockout-mapping": "2.4.1",
-    "jquery-timeago": "1.5.2"
+    "jquery-timeago": "1.5.2",
+    "alertify.js": "0.3.11" 
   }
 }

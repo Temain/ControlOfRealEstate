@@ -5,6 +5,8 @@
     ViewBag.Title = "Обсуждение | Система контроля недвижимости";
 }
 
+@inject SignInManager<ApplicationUser> SignInManager
+
 <div class="pusher">
     <div class="ui container">
 
@@ -28,10 +30,13 @@
             }
         </div>
 
-        <button id="addThemeBtn" class="ui primary button header-button">
-            <i class="fork icon"></i>Добавить тему
-        </button>
-       
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <button id="addThemeBtn" class="ui primary button header-button">
+                <i class="fork icon"></i>Добавить тему
+            </button>
+        }
+
         @if (!Model.ForumThreads.Any())
         {
             <div id="empltyListMessage" class="ignored ui info message">Для данного объекта не создано ни одной темы для обсуждения.</div>

@@ -6,6 +6,8 @@
     ViewBag.Title = "Обсуждение | Система контроля недвижимости";
 }
 
+@inject SignInManager<ApplicationUser> SignInManager
+
 <div class="pusher">
     <div class="ui container">
 
@@ -34,18 +36,27 @@
             @CommentHtmlHelper.HierarchycalComments(Model.Comments)
         </div>
 
-        <h4 id="commentLink" class="comment-link"><a href="#">Написать комментарий</a></h4>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <h4 id="commentLink" class="comment-link"><a href="#">Написать комментарий</a></h4>
 
-        <form id="replyForm" class="ui reply form">
-            <input type="hidden" name="forumThreadId" value="@Model.ForumThreadId" />
-            <input type="hidden" id="parentCommentId" name="parentCommentId" />
-            <div class="field">
-                <textarea name="commentText"></textarea>
+            <form id="replyForm" class="ui reply form">
+                <input type="hidden" name="forumThreadId" value="@Model.ForumThreadId" />
+                <input type="hidden" id="parentCommentId" name="parentCommentId" />
+                <div class="field">
+                    <textarea name="commentText"></textarea>
+                </div>
+                <div id="replyBtn" class="ui primary labeled icon button">
+                    <i class="icon edit"></i> Отправить
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="ignored ui success message">
+                Только зарегистрированные пользователи могут оставлять комментарии. <a href="@Url.Action("Login", "Account")">Войдите</a>, пожалуйста.
             </div>
-            <div id="replyBtn" class="ui primary labeled icon button">
-                <i class="icon edit"></i> Отправить
-            </div>
-        </form>
+        }
     </div>
 </div>
 

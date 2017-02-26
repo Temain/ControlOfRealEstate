@@ -3,11 +3,11 @@
 
 <div class="comment">
     <a class="avatar">
-        <img src="@CommentHtmlHelper.ToGravatarUrl("mail@mail.ru", 50)">
+        <img src="@CommentHtmlHelper.ToGravatarUrl(Model.Email, 50)">
     </a>
     <div class="content">
         <input type="hidden" name="commentId" value="@Model.CommentId" />
-        <a class="author">Matt</a>
+        <a class="author">@Model.UserName.ToLower()</a>
         <div class="metadata">
             <time class="timeago date" datetime="@Model.CreatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")">@Model.CreatedAt</time>
         </div>
