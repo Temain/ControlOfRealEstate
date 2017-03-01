@@ -38,6 +38,11 @@ namespace ControlOfRealEstate.Models
         public string StatusPlacemark { get; set; }
 
         /// <summary>
+        /// Цвет статуса
+        /// </summary>
+        public string StatusColor { get; set; }
+
+        /// <summary>
         /// Описание
         /// </summary>
         public string Description { get; set; }

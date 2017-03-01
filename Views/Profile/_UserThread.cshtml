@@ -1,0 +1,12 @@
+@model ControlOfRealEstate.Models.ForumViewModels.ForumThreadViewModel
+
+<a asp-controller="forum" asp-action="thread" asp-route-id=@Model.ForumThreadId class="item">
+    <div class="right floated content">
+        <time class="timeago description" datetime="@Model.LastUpdate.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")"><small>@Model.LastUpdate</small></time>
+    </div>
+    <i class="right triangle icon"></i>
+    <div class="content">
+        <div class="header">@Model.Theme</div>
+        <div class="description"><small>@Model.Description</small></div>
+    </div>
+</a>

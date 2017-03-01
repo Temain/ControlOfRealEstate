@@ -1,0 +1,13 @@
+@model ControlOfRealEstate.Models.IllegalObjectViewModel
+
+<a asp-controller="forum" asp-action="index" asp-route-id=@Model.IllegalObjectId class="item">
+    <div class="right floated content">
+        <time class="timeago description" style="float: right;"><small>@Model.CreatedAt</small></time><br />
+        <small class="ui small @Model.StatusColor label" style="float: right; margin-top: 0.5em;">@Model.StatusName</small>
+    </div>
+    <i class="right triangle icon"></i>
+    <div class="content">
+        <div class="header">@Model.Address</div>
+        <div class="description" style="padding-top: 0.5em;"><small>@Model.Description</small></div>
+    </div>
+</a>

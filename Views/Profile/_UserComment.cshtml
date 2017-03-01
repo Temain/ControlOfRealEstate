@@ -1,0 +1,12 @@
+@model ControlOfRealEstate.Models.ForumViewModels.CommentViewModel
+
+<a asp-controller="forum" asp-action="thread" asp-route-id=@Model.ForumThreadId class="item">
+    <div class="right floated content">
+        <time class="timeago description" datetime="@Model.CreatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")"><small>@Model.CreatedAt</small></time>
+    </div>
+    <i class="right triangle icon"></i>
+    <div class="content">
+        <div class="header">@Model.CommentText</div>
+        @*<div class="description">@Model.CommentId</div>*@
+    </div>
+</a>

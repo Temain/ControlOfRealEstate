@@ -27,6 +27,11 @@ namespace ControlOfRealEstate.Models
         public string IllegalObjectPlacemark { get; set; }
 
         /// <summary>
+        /// Цвет статуса
+        /// </summary>
+        public string IllegalObjectColor { get; set; }
+
+        /// <summary>
         /// Порядок сортировки
         /// </summary>
         public int? IllegalObjectStatusOrder { get; set; }
