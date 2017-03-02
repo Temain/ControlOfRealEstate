@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using ControlOfRealEstate.DataAccess;
 using ControlOfRealEstate.Models;
+using ControlOfRealEstate.Models.IllegalObjectViewModels;
 using ControlOfRealEstate.Models.ModerationViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControlOfRealEstate.Controllers
@@ -84,7 +86,7 @@ namespace ControlOfRealEstate.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Approve(List<int> illegalObjectIds, bool cancel = false)
+        public IActionResult ApproveObject(List<int> illegalObjectIds, bool cancel = false)
         {
             var illegalObjects = _context.IllegalObjects.Where(x => illegalObjectIds.Contains(x.IllegalObjectId) && x.DeletedAt == null);
             if (cancel)
@@ -111,6 +113,67 @@ namespace ControlOfRealEstate.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult EditObject(int illegalObjectId)
+        {
+            var illegalObject = _context.IllegalObjects
+                .Include(x => x.Status)
+                .Include(x => x.ApplicationUser)
+                .SingleOrDefault(x => x.IllegalObjectId == illegalObjectId && x.DeletedAt == null);
+
+            var statuses = _context.IllegalObjectStatuses
+                .Select(x => new
+                {
+                    Id = x.IllegalObjectStatusId,
+                    Value = x.IllegalObjectStatusName
+                });
+
+            var viewModel = new EditIllegalObjectViewModel
+            {
+                IllegalObjectId = illegalObject.IllegalObjectId,
+                Address = illegalObject.Address,
+                Description = illegalObject.Description,
+                StatusId = illegalObject.StatusId,
+                Infringement = illegalObject.Infringement,
+                ResultsOfReview = illegalObject.ResultsOfReview,
+                ApplicationUserId = illegalObject.ApplicationUserId,
+                ApplicationUserEmail = illegalObject.ApplicationUser.Email,
+                ApplicationUserName = illegalObject.ApplicationUser.UserName,
+                CreatedAt = illegalObject.CreatedAt,
+                ApprovedAt = illegalObject.ApprovedAt,
+                Name = illegalObject.Name,
+                NeagentId = illegalObject.NeagentId,
+                Statuses = new SelectList(statuses, "Id" , "Value")
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditObject(EditIllegalObjectViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var illegalObject = _context.IllegalObjects
+                .SingleOrDefault(x => x.IllegalObjectId == viewModel.IllegalObjectId && x.DeletedAt == null);
+            if (illegalObject == null)
+            {
+                return NotFound();
+            }
+
+            illegalObject.Description = viewModel.Description;
+            illegalObject.StatusId = viewModel.StatusId;
+            illegalObject.ResultsOfReview = viewModel.ResultsOfReview;
+            illegalObject.Infringement = viewModel.Infringement;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Moderation");
         }
     }
 }

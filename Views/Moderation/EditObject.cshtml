@@ -1,0 +1,49 @@
+﻿@using ControlOfRealEstate.HtmlHelpers;
+@using ControlOfRealEstate.Models.IllegalObjectViewModels;
+@model EditIllegalObjectViewModel
+@{
+    Layout = "_LayoutForum";
+    ViewBag.Title = "Редактирование объекта | Система контроля недвижимости";
+}
+
+<div class="pusher">
+    <div class="ui container">
+        <h2 class="ui header" style="margin-bottom: 1em;">Редактирование объекта</h2>
+
+        <form class="ui form" action="@Url.Action("EditObject", "Moderation")" method="post" data-id="@Model.IllegalObjectId">
+            <h4 class="ui dividing header">@Model.Address</h4>
+
+            <div class="field">
+                <img class="ui avatar image" src="@CommentHtmlHelper.ToGravatarUrl(Model.ApplicationUserEmail, 25)">
+                <span><a href="@Url.Action("Index", "Profile", new { userId = Model.ApplicationUserId })">@Model.ApplicationUserName</a> [@Model.CreatedAt.ToString("dd.MM.yyyy")]</span>
+
+                @*<span>Добавил <strong>@Model.CreatedAt.ToString("dd.MM.yyyy")</strong> пользователь <img src="@CommentHtmlHelper.ToGravatarUrl(Model.ApplicationUserEmail, 25)"> <strong>@Model.ApplicationUserName</strong></span>*@
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label asp-for="StatusId" class="col-md-2 control-label">Статус</label>
+                    <select asp-for="StatusId" asp-items="@Model.Statuses"></select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Описание</label>
+                <textarea name="Description">@Model.Description</textarea>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>Результаты рассмотрения</label>
+                    <input type="text" name="ResultsOfReview" value="@Model.ResultsOfReview">
+                </div>
+                <div class="field">
+                    <label>Выявленные нарушения</label>
+                    <input type="text" name="Infringement" value="@Model.Infringement">
+                </div>
+            </div>
+
+            <div style="margin-top: 2em;">
+                <a href="@Url.Action("Index", "Moderation")" class="ui labeled icon button" type="button"><i class="arrow left icon"></i> Назад</a>
+                <button class="ui green labeled icon button" type="submit"><i class="save icon"></i> Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -22,9 +22,17 @@ namespace ControlOfRealEstate.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string userId)
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = null;
+            if (userId != null)
+            {
+                user = await _userManager.FindByIdAsync(userId);
+            }
+            else
+            {
+                user = await _userManager.GetUserAsync(User);
+            }    
 
             var illegalObjects = _context.IllegalObjects
                 .Include(x => x.Status)

@@ -7,7 +7,7 @@
     </a>
     <div class="content">
         <input type="hidden" class="comment-id" value="@Model.CommentId" />
-        <a class="author">@Model.UserName.ToLower()</a>
+        <a href="@Url.Action("", "", new { userId = Model.UserId })" class="author">@Model.UserName.ToLower()</a>
         <div class="metadata">
             <time class="timeago date" datetime="@Model.CreatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")">@Model.CreatedAt</time>
         </div>

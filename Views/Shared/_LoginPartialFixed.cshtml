@@ -19,14 +19,13 @@
                             <small>@user.Email</small>
                         </div>
                         <i class="dropdown icon"></i> <div class="menu">
-                            <div class="item"><a href="@Url.Action("Index", "Profile")">Профиль</a></div>
+                            <div class="item"><a href="@Url.Action("Index", "Profile")" class="black-link">Профиль</a></div>
                             <div class="divider"></div>
                             @if (User.IsInRole("Administrator"))
                             {
-                                <div class="item"><a href="@Url.Action("Index", "Moderation")">Модерация</a></div>
+                                <div class="item"><a href="@Url.Action("Index", "Moderation")" class="black-link">Модерация</a></div>
                             }
                             <div id="addObjectBtn" class="item">Подать информацию</div>
-                            <div class="item">Проверить статус</div>
                             <div class="divider"></div>
                             <div class="item" id="logoutLink" onclick="$('#logoutForm').submit();">Выход</div>
                         </div>
@@ -52,9 +51,6 @@ else
                             Войти
                         </a>
                     </div>
-                    @*<div class="item">
-                            <a href="@Url.Action("Register", "Account")">Регистрация</a>
-                        </div>*@
                 </div>
 
                 <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" style="display: none;">

@@ -83,6 +83,16 @@ namespace ControlOfRealEstate
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "moderation",
+                    template: "moderation/editobject/{illegalObjectId?}",
+                    defaults: new { controller = "Moderation", action = "EditObject" });
+
+                routes.MapRoute(
+                    name: "profile",
+                    template: "profile/{userId?}",
+                    defaults: new { controller = "Profile", action = "Index" });
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
 

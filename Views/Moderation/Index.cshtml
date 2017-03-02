@@ -43,7 +43,7 @@
         }
         else
         {
-            <form id="illegalObjectsForm" action="@Url.Action("Approve", "Moderation")" method="post">
+            <form id="illegalObjectsForm" action="@Url.Action("ApproveObject", "Moderation")" method="post">
                 <table class="ui selectable celled striped definition small table">
                     <thead>
                         <tr>
@@ -84,7 +84,7 @@
                                     <td class="center aligned"><a class="ui small @illegalObject.StatusColor label">@illegalObject.StatusName</a></td>
                                     <td class="center aligned" style="font-size: 0.95em;"><span>@(illegalObject.CreatedAt != null ? illegalObject.CreatedAt.Value.ToString("dd.MM.yyyy") : "")</span></td>
                                     <td class="center aligned">
-                                        <a href="#" data-tooltip="Редактирование"><i class="large black pencil icon"></i></a>
+                                        <a href="@Url.Action("EditObject", "Moderation", new { illegalObjectId = illegalObject.IllegalObjectId })" data-tooltip="Редактирование"><i class="large black pencil icon"></i></a>
                                     </td>
                                 </tr>
 
@@ -163,7 +163,6 @@
                    .attr("type", "hidden")
                    .attr("name", "cancel").val("true");
                 $('#illegalObjectsForm').append($(input));
-                // $('#illegalObjectsForm').submit();
             });
         });
     </script>

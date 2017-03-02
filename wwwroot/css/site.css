@@ -202,3 +202,7 @@ html, body {
 .ui.comments {
     max-width: none !important;
 }
+
+.black-link {
+    color: black !important;
+}

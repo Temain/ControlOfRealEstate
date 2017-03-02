@@ -50,34 +50,7 @@
         </div>
     </div>
 
-    <div id="addThemeModal" class="ui modal">
-        @*<i class="close icon"></i>*@
-        <div class="header">
-            Новая тема
-        </div>
-        <div class="content">
-            <form class="ui form">
-                <input type="hidden" name="illegalObjectId" value="@Model.IllegalObjectId" />
-                <div class="field">
-                    <label>Тема</label>
-                    <input type="text" name="theme" placeholder="Тема">
-                </div>
-                <div class="field">
-                    <label>Описание</label>
-                    <textarea rows="4" name="description" placeholder="Описание"></textarea>
-                </div>
-            </form>
-        </div>
-        <div class="actions">
-            <div class="ui black deny button">
-                Отмена
-            </div>
-            <div class="ui positive right labeled icon button">
-                Сохранить
-                <i class="checkmark icon"></i>
-            </div>
-        </div>
-    </div>
+    @Html.Partial("_AddThemeModal", Model)
 </div>
 
 @section Scripts {

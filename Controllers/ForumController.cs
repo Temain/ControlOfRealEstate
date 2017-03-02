@@ -96,6 +96,7 @@ namespace ControlOfRealEstate.Controllers
                     .Select(x => new CommentViewModel
                     {
                         CommentId = x.CommentId,
+                        UserId = x.ApplicationUserId,
                         UserName = x.ApplicationUser.UserName,
                         Email = x.ApplicationUser.Email,
                         CommentText = x.CommentText,

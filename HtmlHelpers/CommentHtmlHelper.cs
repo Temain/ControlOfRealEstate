@@ -39,7 +39,7 @@ namespace ControlOfRealEstate.HtmlHelpers
                         </a>
                         <div class=""content"">
                             <input type=""hidden"" class=""comment-id"" value=""{childComment.CommentId}"" />
-                            <a class=""author"">{childComment.UserName.ToLower()}</a>
+                            <a href='/profile/{childComment.UserId}' class=""author"">{childComment.UserName.ToLower()}</a>
                             <div class=""metadata"">
                                 <time class=""timeago date"" datetime=""{childComment.CreatedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ssZ")}"">{childComment.CreatedAt}</time>
                             </div>
