@@ -38,8 +38,12 @@ namespace ControlOfRealEstate.Controllers
                     StatusId = x.StatusId,
                     StatusName = x.Status.IllegalObjectStatusName,
                     StatusColor = x.Status.IllegalObjectColor,
-                    CreatedAt = x.CreatedAt
+                    CreatedAt = x.CreatedAt,
+                    ApprovedAt = x.ApprovedAt                    
                 });
+
+            var notApprovedTotal = illegalObjects.Count(x => x.ApprovedAt == null);
+            var notApprovedToday = illegalObjects.Count(x => x.ApprovedAt == null && (x.CreatedAt != null && x.ApprovedAt != null && x.CreatedAt.Value.Date == DateTime.Now.Date));
 
             if (query != null)
             {
@@ -55,9 +59,11 @@ namespace ControlOfRealEstate.Controllers
             var viewModel = new ModerationViewModel
             {
                 IllegalObjects = illegalObjectsList,
-                PagesCount = (int)Math.Ceiling((double) illegalObjectsList.Count() / pageSize),
+                PagesCount = (int)Math.Ceiling((double) illegalObjects.Count() / pageSize),
                 PageSize = pageSize,
-                CurrentPage = page
+                CurrentPage = page,
+                NotApprovedTotal = notApprovedTotal,
+                NotApprovedToday = notApprovedToday
             };
 
             return View(viewModel);

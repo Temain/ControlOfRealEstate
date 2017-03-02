@@ -76,5 +76,10 @@ namespace ControlOfRealEstate.Models
         /// Дата добавления
         /// </summary>
         public DateTime? CreatedAt { get; set; }
+
+        /// <summary>
+        /// Дата утверждения модератором
+        /// </summary>
+        public DateTime? ApprovedAt { get; set; }
     }
 }

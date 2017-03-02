@@ -38,7 +38,9 @@ namespace ControlOfRealEstate.Controllers
         [HttpGet("")]
         public List<IllegalObjectViewModel> Get(int? illegalObjectStatusId)
         {
-            var illegalObjects = _context.IllegalObjects.AsNoTracking();
+            var illegalObjects = _context.IllegalObjects
+                .Where(x => x.DeletedAt == null && x.ApprovedAt != null)
+                .AsNoTracking();
 
             if (illegalObjectStatusId != null)
             {
