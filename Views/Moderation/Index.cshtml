@@ -10,124 +10,139 @@
 <div class="pusher">
     <div class="ui container">
         <h2 class="ui header" style="margin-bottom: 1em;">Модерация объектов</h2>
+
         <div class="ui grid" style="margin-bottom: 0.8em;">
-            <div class="four column row">
-                <div class="left floated column">
+            <div class="column row">
+                <div class="eight wide left floated column">
                     <div class="ui small compact menu">
-                        <a class="item">
-                           За сегодня <div class="floating ui teal label">@Model.NotApprovedToday</div>
+                        <a class="item" href="@Url.Action("Index", "Moderation")">
+                            Все <div class="floating ui yellow label">@Model.Total</div>
                         </a>
-                        <a class="item">
+                        <a class="item" href="@Url.Action("Index", "Moderation", new { today = true })">
+                            За сегодня <div class="floating ui teal label">@Model.NotApprovedToday</div>
+                        </a>
+                        <a class="item" href="@Url.Action("Index", "Moderation", new { total = true })">
                             Неутверждённые <div class="floating ui red label">@Model.NotApprovedTotal</div>
                         </a>
                     </div>
                 </div>
                 <div class="right floated column">
-                    <div class="ui icon input" style="float: right;">
-                        <input type="text" placeholder="Введите адрес...">
-                        <i class="inverted circular search link icon"></i>
-                    </div>
+                    <form action="@Url.Action("Index", "Moderation")">
+                        <div class="ui icon input" style="float: right;">
+                            <input type="text" name="query" value="@Model.Query" placeholder="Введите адрес...">
+                            <i class="inverted circular search link icon"></i>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <table class="ui selectable celled striped definition small table">
-            <thead>
-                <tr>
-                    <th class="center aligned"></th>
-                    <th class="five wide">Адрес</th>
-                    <th class="three wide">Результаты</th>
-                    <th class="three wide">Нарушения</th>
-                    <th class="three wide center aligned">Статус</th>
-                    <th class="one wide center aligned">Добавен</th>
-                    <th class="center aligned">Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    var index = Model.PageSize * (Model.CurrentPage - 1) + 1;
-                    foreach (IllegalObjectViewModel illegalObject in Model.IllegalObjects)
-                    {
-                        <tr class="@(illegalObject.ApprovedAt == null ? "error" : "")" data-id="@illegalObject.IllegalObjectId">
-                        @*<tr>*@
-                            <td class="collapsing">
-                                <div class="ui fitted slider checkbox">
-                                    <input type="checkbox"> <label></label>
-                                </div>
-                            </td>
-                            <td>
-                                @illegalObject.Address
-                                <br />
-                                @if (!string.IsNullOrEmpty(illegalObject.Description))
-                                {
-                                    <small style="text-transform: capitalize;">@(illegalObject.Description.Length > 50 ? illegalObject.Description.Substring(0, 49) + "..." : illegalObject.Description)</small>
-                                }
-                                else
-                                {
-                                    <small>Нет описания</small>
-                                }
-                            </td>
-                            <td>@illegalObject.ResultsOfReview</td>
-                            <td>@illegalObject.Infringement</td>
-                            <td class="center aligned"><a class="ui small @illegalObject.StatusColor label">@illegalObject.StatusName</a></td>
-                            <td class="center aligned" style="font-size: 0.95em;"><span>@(illegalObject.CreatedAt != null ? illegalObject.CreatedAt.Value.ToString("dd.MM.yyyy") : "")</span></td>
-                            <td class="center aligned">
-                                <a href="#" data-tooltip="Редактирование"><i class="large black pencil icon"></i></a>
-                            </td>
+        @if (!Model.IllegalObjects.Any())
+        {
+            <div class="ui ignored info message">Не найдено ни одного объекта незаконного строительства.</div>
+        }
+        else
+        {
+            <form id="illegalObjectsForm" action="@Url.Action("Approve", "Moderation")" method="post">
+                <table class="ui selectable celled striped definition small table">
+                    <thead>
+                        <tr>
+                            <th class="center aligned"></th>
+                            <th class="five wide">Адрес</th>
+                            <th class="three wide">Результаты</th>
+                            <th class="three wide">Нарушения</th>
+                            <th class="three wide center aligned">Статус</th>
+                            <th class="one wide center aligned">Добавен</th>
+                            <th class="center aligned">Действия</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var index = Model.PageSize * (Model.CurrentPage - 1) + 1;
+                            foreach (IllegalObjectViewModel illegalObject in Model.IllegalObjects)
+                            {
+                                <tr class="@(illegalObject.ApprovedAt == null ? "error" : "")" data-id="@illegalObject.IllegalObjectId">
+                                    <td class="collapsing">
+                                        <div class="ui fitted slider checkbox">
+                                            <input type="checkbox" name="illegalObjectIds" value="@illegalObject.IllegalObjectId"> <label></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @illegalObject.Address
+                                        <br />
+                                        @if (!string.IsNullOrEmpty(illegalObject.Description))
+                                        {
+                                            <small style="text-transform: capitalize;">@(illegalObject.Description.Length > 50 ? illegalObject.Description.Substring(0, 49) + "..." : illegalObject.Description)</small>
+                                        }
+                                        else
+                                        {
+                                            <small>Нет описания</small>
+                                        }
+                                    </td>
+                                    <td>@illegalObject.ResultsOfReview</td>
+                                    <td>@illegalObject.Infringement</td>
+                                    <td class="center aligned"><a class="ui small @illegalObject.StatusColor label">@illegalObject.StatusName</a></td>
+                                    <td class="center aligned" style="font-size: 0.95em;"><span>@(illegalObject.CreatedAt != null ? illegalObject.CreatedAt.Value.ToString("dd.MM.yyyy") : "")</span></td>
+                                    <td class="center aligned">
+                                        <a href="#" data-tooltip="Редактирование"><i class="large black pencil icon"></i></a>
+                                    </td>
+                                </tr>
 
-                        index++;
-                    }
-                }
-            </tbody>
-            <tfoot class="full-width">
-                <tr>
-                    <th></th>
-                    <th colspan="7">
-                        <div class="ui right floated small pagination menu">
-                            <a href="@Url.Action("Index", "Moderation")" class="icon item">
-                                <i class="left chevron icon"></i>
-                            </a>
-                            @{
-                                if (Model.CurrentPage - 4 == 0)
-                                {
-                                    <a href="@Url.Action("Index", "Moderation")" class="item">1</a>
-                                }
-                                else if (Model.CurrentPage - 4 > 0)
-                                {
-                                    <a href="@Url.Action("Index", "Moderation")" class="item">1</a>
-                                    <a class="disabled item">...</a>
-                                }
-
-                                for (int i = 1; i <= Model.PagesCount; i++)
-                                {
-                                    if (i - Model.CurrentPage <= 3 && i - Model.CurrentPage >= -3)
-                                    {
-                                        <a href="@Url.Action("Index", "Moderation", new { page = i })" class="item @(Model.CurrentPage == i ? "active" : "")">@i</a>
-                                    }        
-                                }
-
-                                if (Model.PagesCount == Model.CurrentPage + 4)
-                                {
-                                    <a href="@Url.Action("Index", "Moderation", new { page = Model.PagesCount })" class="item">@Model.PagesCount</a>
-                                }
-                                else if (Model.PagesCount > Model.CurrentPage + 4)
-                                {
-                                    <a class="disabled item">...</a>
-                                    <a href="@Url.Action("Index", "Moderation", new { page = Model.PagesCount })" class="item">@Model.PagesCount</a>
-                                }
+                                index++;
                             }
+                        }
+                    </tbody>
+                    <tfoot class="full-width">
+                        <tr>
+                            <th></th>
+                            <th colspan="7">
+                                <div class="ui right floated small pagination menu">
+                                    <a href="@Url.Action("Index", "Moderation")" class="icon item">
+                                        <i class="left chevron icon"></i>
+                                    </a>
+                                    @{
+                                        if (Model.CurrentPage - 4 == 0)
+                                        {
+                                            <a href="@Url.Action("Index", "Moderation")" class="item">1</a>
+                                        }
+                                        else if (Model.CurrentPage - 4 > 0)
+                                        {
+                                            <a href="@Url.Action("Index", "Moderation")" class="item">1</a>
+                                            <a class="disabled item">...</a>
+                                        }
 
-                            <a href="@Url.Action("Index", "Moderation", new { page = Model.PagesCount })" class="icon item">
-                                <i class="right chevron icon"></i>
-                            </a>
-                        </div>
-                        <div class="ui small green labeled icon button"><i class="checkmark icon"></i> Утвердить </div>
-                    </th>
+                                        for (int i = 1; i <= Model.PagesCount; i++)
+                                        {
+                                            if (i - Model.CurrentPage <= 3 && i - Model.CurrentPage >= -3)
+                                            {
+                                                <a href="@Url.Action("Index", "Moderation", new { page = i })" class="item @(Model.CurrentPage == i ? "active" : "")">@i</a>
+                                            }
+                                        }
 
-                </tr>
-            </tfoot>
-        </table>
+                                        if (Model.PagesCount == Model.CurrentPage + 4)
+                                        {
+                                            <a href="@Url.Action("Index", "Moderation", new { page = Model.PagesCount })" class="item">@Model.PagesCount</a>
+                                        }
+                                        else if (Model.PagesCount > Model.CurrentPage + 4)
+                                        {
+                                            <a class="disabled item">...</a>
+                                            <a href="@Url.Action("Index", "Moderation", new { page = Model.PagesCount })" class="item">@Model.PagesCount</a>
+                                        }
+                                    }
+
+                                    <a href="@Url.Action("Index", "Moderation", new { page = Model.PagesCount })" class="icon item">
+                                        <i class="right chevron icon"></i>
+                                    </a>
+                                </div>
+                                <button type="submit" class="ui small green labeled icon button"><i class="checkmark icon"></i> Утвердить </button>
+                                <button type="submit" id="cancelButton" class="ui small red labeled icon button"><i class="cancel icon"></i> Отменить </button>
+                            </th>
+
+                        </tr>
+                    </tfoot>
+                </table>
+            </form>
+        }      
     </div>
 </div>
 
@@ -136,7 +151,13 @@
     <script src="~/lib/jquery-timeago/locales/jquery.timeago.ru.js"></script>
     <script>
         $(function () {
-
+            $('#cancelButton').click(function () {
+                var input = $("<input>")
+                   .attr("type", "hidden")
+                   .attr("name", "cancel").val("true");
+                $('#illegalObjectsForm').append($(input));
+                // $('#illegalObjectsForm').submit();
+            });
         });
     </script>
 }

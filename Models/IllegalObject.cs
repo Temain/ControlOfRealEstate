@@ -14,7 +14,7 @@ namespace ControlOfRealEstate.Models
         /// <summary>
         /// Идентификатор
         /// </summary>
-        public int? IllegalObjectId { get; set; }
+        public int IllegalObjectId { get; set; }
 
         /// <summary>
         /// Наименование нелегального объекта

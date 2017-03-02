@@ -22,7 +22,7 @@ namespace ControlOfRealEstate.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(string query = null, int page = 1, int pageSize = 25)
+        public IActionResult Index(string query = null, int page = 1, int pageSize = 25, bool today = false, bool total = false)
         {
             var illegalObjects = _context.IllegalObjects
                 .Include(x => x.Status)
@@ -42,12 +42,23 @@ namespace ControlOfRealEstate.Controllers
                     ApprovedAt = x.ApprovedAt                    
                 });
 
+            var totalObjects = illegalObjects.Count();
             var notApprovedTotal = illegalObjects.Count(x => x.ApprovedAt == null);
             var notApprovedToday = illegalObjects.Count(x => x.ApprovedAt == null && (x.CreatedAt != null && x.ApprovedAt != null && x.CreatedAt.Value.Date == DateTime.Now.Date));
 
             if (query != null)
             {
                 illegalObjects = illegalObjects.Where(x => x.Address.Contains(query));
+            }
+
+            if (total)
+            {
+                illegalObjects = illegalObjects.Where(x => x.ApprovedAt == null);
+            }
+
+            if (today)
+            {
+                illegalObjects = illegalObjects.Where(x => x.ApprovedAt == null && (x.CreatedAt != null && x.ApprovedAt != null && x.CreatedAt.Value.Date == DateTime.Now.Date));
             }
 
             var illegalObjectsList = illegalObjects
@@ -62,11 +73,44 @@ namespace ControlOfRealEstate.Controllers
                 PagesCount = (int)Math.Ceiling((double) illegalObjects.Count() / pageSize),
                 PageSize = pageSize,
                 CurrentPage = page,
+                Query = query,
+                Total = totalObjects,
                 NotApprovedTotal = notApprovedTotal,
-                NotApprovedToday = notApprovedToday
+                NotApprovedToday = notApprovedToday,
+                IsNotApprovedTodayList = today,
+                IsNotApprovedTotalList = total
             };
 
             return View(viewModel);
+        }
+
+        public IActionResult Approve(List<int> illegalObjectIds, bool cancel = false)
+        {
+            var illegalObjects = _context.IllegalObjects.Where(x => illegalObjectIds.Contains(x.IllegalObjectId) && x.DeletedAt == null);
+            if (cancel)
+            {
+                illegalObjects = illegalObjects.Where(x => x.ApprovedAt != null);
+            }
+            else
+            {
+                illegalObjects = illegalObjects.Where(x => x.ApprovedAt == null);
+            }
+
+            foreach(var illegalObject in illegalObjects)
+            {
+                if (cancel)
+                {
+                    illegalObject.ApprovedAt = null;
+                }
+                else
+                {
+                    illegalObject.ApprovedAt = DateTime.Now;
+                }
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
         }
     }
 }
