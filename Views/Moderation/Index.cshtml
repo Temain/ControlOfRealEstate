@@ -97,10 +97,14 @@
                             <th></th>
                             <th colspan="7">
                                 <div class="ui right floated small pagination menu">
-                                    <a href="@Url.Action("Index", "Moderation")" class="icon item">
-                                        <i class="left chevron icon"></i>
-                                    </a>
                                     @{
+                                        if (Model.CurrentPage > 1)
+                                        {
+                                            <a href="@Url.Action("Index", "Moderation", new { page = Model.CurrentPage - 1 })" class="icon item">
+                                                <i class="left chevron icon"></i>
+                                            </a>
+                                        }
+
                                         if (Model.CurrentPage - 4 == 0)
                                         {
                                             <a href="@Url.Action("Index", "Moderation")" class="item">1</a>
@@ -128,11 +132,14 @@
                                             <a class="disabled item">...</a>
                                             <a href="@Url.Action("Index", "Moderation", new { page = Model.PagesCount })" class="item">@Model.PagesCount</a>
                                         }
-                                    }
 
-                                    <a href="@Url.Action("Index", "Moderation", new { page = Model.PagesCount })" class="icon item">
-                                        <i class="right chevron icon"></i>
-                                    </a>
+                                        if (Model.CurrentPage < Model.PagesCount)
+                                        {
+                                            <a href="@Url.Action("Index", "Moderation", new { page = Model.CurrentPage + 1 })" class="icon item">
+                                                <i class="right chevron icon"></i>
+                                            </a>
+                                        }
+                                    }
                                 </div>
                                 <button type="submit" class="ui small green labeled icon button"><i class="checkmark icon"></i> Утвердить </button>
                                 <button type="submit" id="cancelButton" class="ui small red labeled icon button"><i class="cancel icon"></i> Отменить </button>
