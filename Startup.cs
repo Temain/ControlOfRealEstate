@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ControlOfRealEstate.Models;
 using ControlOfRealEstate.Services;
+using Microsoft.AspNetCore.Routing;
 
 namespace ControlOfRealEstate
 {
@@ -52,6 +53,8 @@ namespace ControlOfRealEstate
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

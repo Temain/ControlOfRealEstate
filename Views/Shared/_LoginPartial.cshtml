@@ -20,6 +20,11 @@
                     <i class="dropdown icon"></i> <div class="menu">
                         <div class="item"><a href="@Url.Action("Index", "Profile")">Профиль</a></div>
                         <div class="divider"></div>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <div class="item"><a href="@Url.Action("Index", "Moderation")">Модерация</a></div>
+                            <div class="divider"></div>
+                        }
                         <div class="item" id="logoutLink" onclick="$('#logoutForm').submit();">Выход</div>
                     </div>
                 </div>

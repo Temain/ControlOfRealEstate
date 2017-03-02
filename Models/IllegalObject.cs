@@ -71,6 +71,11 @@ namespace ControlOfRealEstate.Models
         public int? NeagentId { get; set; }
 
         /// <summary>
+        /// Утверждено ли модератором
+        /// </summary>
+        public DateTime? ApprovedAt { get; set; }
+
+        /// <summary>
         /// Дата создания
         /// </summary>
         public DateTime CreatedAt { get; set; }
