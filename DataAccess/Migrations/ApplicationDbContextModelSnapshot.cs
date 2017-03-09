@@ -24,6 +24,8 @@ namespace ControlOfRealEstate.DataAccess.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<string>("DisplayName");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
@@ -128,7 +130,7 @@ namespace ControlOfRealEstate.DataAccess.Migrations
 
             modelBuilder.Entity("ControlOfRealEstate.Models.IllegalObject", b =>
                 {
-                    b.Property<int?>("IllegalObjectId")
+                    b.Property<int>("IllegalObjectId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address");

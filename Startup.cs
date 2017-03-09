@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using ControlOfRealEstate.Models;
 using ControlOfRealEstate.Services;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ControlOfRealEstate
 {
@@ -77,6 +80,27 @@ namespace ControlOfRealEstate
             app.UseStaticFiles();
 
             app.UseIdentity();
+
+            app.UseVkontakteAuthentication(options =>
+            {
+                options.AuthenticationScheme = "vk";
+                options.ClientId = "5904669";
+                options.ClientSecret = "ST6pUuuS4g6hPsmM3UzP";
+            });
+
+            app.UseGoogleAuthentication(new GoogleOptions
+            {
+                AuthenticationScheme = "google",
+                ClientId = "119706625951-nk8nho1ipvq167afmsiut86j2g2mui1r.apps.googleusercontent.com",
+                ClientSecret = "4RMMVRKzxZ8TFGIT5NIcALuu"
+            });
+
+            //app.UseGoogleAuthentication(new GoogleOptions
+            //{
+            //    AuthenticationScheme = "google",
+            //    ClientId = "119706625951-nk8nho1ipvq167afmsiut86j2g2mui1r.apps.googleusercontent.com",
+            //    ClientSecret = "4RMMVRKzxZ8TFGIT5NIcALuu"
+            //});
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 

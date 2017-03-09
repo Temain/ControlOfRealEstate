@@ -19,6 +19,9 @@
         <link rel="stylesheet" href="https://oss.maxcdn.com/semantic-ui/2.1.8/semantic.min.css"
               asp-fallback-href="~/lib/semantic/dist/semantic.min.css"
               asp-fallback-test-class="ui button" asp-fallback-test-property="cursor" asp-fallback-test-value="pointer" />
+
+        @RenderSection("styles", required: false)
+
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>

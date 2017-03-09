@@ -63,6 +63,24 @@
         <div class="ui message">
             Новичок? <a href="@Url.Action("Register", "Account")">Регистрация</a>
         </div>
+
+        <div class="ui message">
+            <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+                <div>
+                    <p>
+                        @{
+                            var loginProviders = SignInManager.GetExternalAuthenticationSchemes().ToList();
+                            foreach (var provider in loginProviders)
+                            {
+                                <button type="submit" class="ui tiny @provider.AuthenticationScheme.ToLower() button" name="provider" value="@provider.AuthenticationScheme" title="Войдите используя ваш @provider.DisplayName account" style="width: 8em;">
+                                    <i class="@provider.AuthenticationScheme.ToLower() icon"></i>@provider.AuthenticationScheme
+                                </button>
+                            }
+                        }
+                    </p>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

@@ -234,8 +234,20 @@ namespace ControlOfRealEstate.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
+
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
+                var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName) ?? info.Principal.FindFirstValue(ClaimTypes.Name);
+                var lastName = info.Principal.FindFirstValue(ClaimTypes.Surname);
+                var displayName = string.IsNullOrEmpty(lastName) && string.IsNullOrEmpty(firstName)
+                    ? email
+                    : (!string.IsNullOrEmpty(lastName) ? lastName : "") + " " + (!string.IsNullOrEmpty(firstName) ? firstName : "");
+
+                var userData = new ExternalLoginConfirmationViewModel {
+                    DisplayName = displayName,
+                    Email = email
+                };
+
+                return View("ExternalLoginConfirmation", userData);
             }
         }
 
@@ -254,7 +266,7 @@ namespace ControlOfRealEstate.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, DisplayName = model.DisplayName, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

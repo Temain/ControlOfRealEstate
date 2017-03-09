@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using ControlOfRealEstate.DataAccess;
 using ControlOfRealEstate.Models;
 using ControlOfRealEstate.Models.ForumViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControlOfRealEstate.Controllers
 {
+    [Authorize]
     public class ProfileController : Controller
     {
         private readonly ApplicationDbContext _context;

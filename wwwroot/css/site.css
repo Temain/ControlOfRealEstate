@@ -206,3 +206,9 @@ html, body {
 .black-link {
     color: black !important;
 }
+
+/* Social network icons */
+
+.vk {
+    background: url(../images/social/vk.png);
+}
