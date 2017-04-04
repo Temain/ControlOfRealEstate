@@ -101,7 +101,7 @@ namespace ControlOfRealEstate.Controllers
             }
         }
 
-        [Authorize("Administrator")]
+        [Authorize(Roles = "Administrator")]
         [HttpGet("parse")]
         public IActionResult Parse()
         {
